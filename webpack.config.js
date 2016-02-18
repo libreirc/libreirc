@@ -6,12 +6,18 @@ if (process.env.WEBPACK === 'release') {
 }
 
 module.exports = {
-  entry: './build/main.js',
-  output: {
-    path: 'build',
-    publicPath: 'build',
-    filename: '_bundle.js'
-  },
+  entry: './src/main.js',
+  output: { path: 'build', publicPath: 'build', filename: '_bundle.js' },
   devtool: 'source-map',
-  plugins: plugins
+  plugins: plugins,
+  module: {
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel',
+        query: { presets: ['es2015', 'stage-3', 'react'] }
+      }
+    ]
+  }
 };

@@ -1,8 +1,8 @@
 {
   "scripts": {
     "test": "flow",
-    "build": "flow && babel src --out-dir build && WEBPACK=release webpack",
-    "start": "babel src --out-dir build --watch & webpack-dev-server"
+    "build": "flow && WEBPACK=release webpack",
+    "start": "webpack-dev-server"
   },
   "dependencies": {
     "react": "^0.14.7",
