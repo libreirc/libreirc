@@ -1,13 +1,19 @@
+// @flow
 const webpack = require('webpack');
 
-var plugins = [];
+var plugins/*: Array<Object>*/ = [];
 if (process.env.WEBPACK === 'release') {
   plugins.push(new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }));
 }
 
 module.exports = {
-  entry: './src/main.js',
-  output: { path: 'build', publicPath: 'build', filename: '_bundle.js' },
+  context: `${__dirname}/src`,
+  entry: './main.js',
+  output: {
+    path: `${__dirname}/../server/public/build`,
+    publicPath: '/build/',
+    filename: '_bundle.js'
+  },
   devtool: 'source-map',
   plugins: plugins,
   module: {
