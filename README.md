@@ -1,13 +1,23 @@
-OpenIRC Web
+OpenIRC
 ========
+IRC for everyone!
 
 ```bash
-npm install
+# Building client-side codes
+cd client
 
-npm test        # Static type check (flow)
-npm run build   # Build everything at once
-open index.html
+npm install   # Install dependencies
+npm test      # Static type checking (flow)
+npm run build # Build everything in production mode (flow + webpack)
 
-npm start       # Do everything except flow in watch mode
-                # Go to http://localhost:8080/webpack-dev-server/
+npm start     # Run webpack in watch mode
+```
+```bash
+# Running server
+cd server
+
+cargo run     # Start a server
+
+# Start the server in production mode
+cargo run --release
 ```
