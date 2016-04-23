@@ -1,3 +1,4 @@
 /client/node_modules/
-/server/target/
+/server/node_modules/
+/server/dist/
 /server/public/build/
