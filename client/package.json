@@ -2,7 +2,7 @@
   "scripts": {
     "test": "flow",
     "build": "flow && NODE_ENV=production webpack -p",
-    "start": "webpack --watch"
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

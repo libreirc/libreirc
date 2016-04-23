@@ -2,7 +2,8 @@
   "scripts": {
     "test": "flow",
     "build": "flow && babel src --out-dir dist",
-    "start": "babel src --out-dir dist --watch"
+    "watch": "babel src --out-dir dist --watch",
+    "start": "node ."
   },
   "main": "dist/main.js",
   "engine": ">=5",

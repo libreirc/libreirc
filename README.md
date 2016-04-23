@@ -10,7 +10,7 @@ npm install   # Install dependencies
 npm test      # Static type checking (flow)
 npm run build # Build everything in production mode (flow + webpack)
 
-npm start     # Run webpack in watch mode
+npm run watch # Run webpack in watch mode
 ```
 ```bash
 # Running server
@@ -20,8 +20,8 @@ npm install   # Install dependencies
 npm test      # Static type checking (flow)
 npm run build # Build everything in production mode (flow + babel)
 
-npm start     # Run babel in watch mode
-node .        # Start the server
+npm run watch # Run babel in watch mode
+npm start     # Start the server
 ```
 
 ### Directory structure
