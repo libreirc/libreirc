@@ -1,2 +1,4 @@
 /client/node_modules/
+/server/node_modules/
+/server/dist/
 /server/public/build/
