@@ -15,9 +15,4 @@ npm start     # Run webpack in watch mode
 ```bash
 # Running server
 cd server
-
-cargo run     # Start a server
-
-# Start the server in production mode
-cargo run --release
 ```
