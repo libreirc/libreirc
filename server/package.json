@@ -14,5 +14,10 @@
     "babel-preset-flow": "^0.1.1",
     "babel-preset-stage-3": "^6.5.0",
     "flow-bin": "^0.23.1"
+  },
+  "dependencies": {
+    "koa": "^2.0.0",
+    "koa-router": "^7.0.1",
+    "koa-send": "^3.2.0"
   }
 }
