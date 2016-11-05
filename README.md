@@ -25,9 +25,7 @@ cd server
 
 yarn                # Install dependencies
 yarn test           # Static type checking (flow)
-yarn build          # Build everything in production mode (flow + babel)
 
-yarn watch          # Run babel in watch mode
 yarn start [port]   # Start the server. Default port is 4321
 ```
 
