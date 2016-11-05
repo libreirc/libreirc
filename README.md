@@ -1,9 +1,12 @@
 OpenIRC
 ========
-IRC for everyone!
+> :heartbeat: IRC Client for everyone!
 
-### Project Goal
-Making open source alternative of [IRCCloud]
+Making open source alternative of [IRCCloud] is this project's very first goal.
+Join our IRC channel if you're interested!
+
+- **#openirc** of [Ozinger IRC network]
+- **#openirc-test** of [Ozinger IRC network]
 
 ### Intructions
 ```bash
@@ -56,4 +59,5 @@ yarn start [port]   # Start the server. Default port is 4321
 
 [GNU AGPL 3.0 License](LICENSE.md)
 
+[Ozinger IRC network]: http://ozinger.org/
 [IRCCloud]: https://www.irccloud.com/
