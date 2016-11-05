@@ -33,24 +33,20 @@ yarn start [port]   # Start the server. Default port is 4321
 ```bash
 # Client side codes
 ▾ client/
-    .flowconfig
-  ▸ node_modules/
   ▸ src/                # Client-side assets (js, css, ...)
     package.json        # Client-side libraries
     webpack.config.js
+    ...
 
 # Server side codes
 ▾ server/
-    .babelrc
-    .flowconfig
-  ▸ dist/               # Build results of server-side codes
-  ▸ node_modules/
   ▾ public/             # Files that will be statically served
     ▸ build/            # Build results of client-side assets
       ...
       index.html
   ▸ src/                # Server-side codes (node.js)
     package.json        # Server-side libraries
+    ...
 ```
 
 --------
