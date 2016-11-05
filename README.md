@@ -2,6 +2,10 @@ OpenIRC
 ========
 IRC for everyone!
 
+### Project Goal
+Making open source alternative of [IRCCloud]
+
+### Intructions
 ```bash
 # Building client-side codes
 cd client
@@ -47,3 +51,5 @@ npm start [port] # Start the server. Default port is 4321
   ▸ src/                # Server-side codes (node.js)
     package.json        # Server-side libraries
 ```
+
+[IRCCloud]: https://www.irccloud.com/
