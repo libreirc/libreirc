@@ -2,18 +2,10 @@
   "license": "AGPL-3.0",
   "scripts": {
     "test": "flow",
-    "build": "flow && babel src --out-dir dist",
-    "watch": "babel src --out-dir dist --watch",
-    "start": "node ."
+    "start": "node --use_strict --harmony ."
   },
-  "main": "dist/main.js",
-  "engine": ">=5",
+  "engine": ">=7",
   "devDependencies": {
-    "babel-cli": "^6.7.7",
-    "babel-plugin-transform-export-extensions": "^6.5.0",
-    "babel-preset-es2015-node5": "^1.2.0",
-    "babel-preset-flow": "^0.1.1",
-    "babel-preset-stage-3": "^6.5.0",
     "flow-bin": "^0.23.1"
   },
   "dependencies": {

@@ -1,5 +1,2 @@
-[ignore]
-.*/dist/.*
-
 [options]
 suppress_comment= \\(.\\|\n\\)*\\$FlowIssue

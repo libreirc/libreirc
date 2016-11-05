@@ -1,18 +1,18 @@
 // @flow
 
-import path from 'path';
-import os from 'os';
+const path = require('path');
+const os = require('os');
 
-import Koa from 'koa';
-import send from 'koa-send';
-import koaRouter from 'koa-router';
+const Koa = require('koa');
+const send = require('koa-send');
+const koaRouter = require('koa-router');
 
 
-const port: number = parseInt(process.argv[2]) || 4321;
+const port /*: number */ = parseInt(process.argv[2]) || 4321;
 const app = new Koa();
 const router = koaRouter();
 
-const publicDirectory: string = path.join(__dirname, '../public');
+const publicDirectory /*: string */ = path.join(__dirname, '../public');
 
 router.get('/', async ctx => {
   await send(ctx, 'index.html', { root: publicDirectory });
