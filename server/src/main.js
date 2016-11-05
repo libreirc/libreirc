@@ -12,7 +12,7 @@ const port /*: number */ = parseInt(process.argv[2]) || 4321;
 const app = new Koa();
 const router = koaRouter();
 
-const publicDirectory /*: string */ = path.join(__dirname, 'public');
+const publicDirectory /*: string */ = path.join(__dirname, '../public');
 
 router.get('/', async ctx => {
   await send(ctx, 'index.html', { root: publicDirectory });

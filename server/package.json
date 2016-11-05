@@ -5,6 +5,7 @@
     "start": "node --use_strict --harmony ."
   },
   "engine": ">=7",
+  "main": "src/main.js",
   "devDependencies": {
     "flow-bin": "^0.34.0"
   },
