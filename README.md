@@ -10,22 +10,22 @@ Making open source alternative of [IRCCloud]
 # Building client-side codes
 cd client
 
-npm install   # Install dependencies
-npm test      # Static type checking (flow)
-npm run build # Build everything in production mode (flow + webpack)
+yarn                # Install dependencies
+yarn test           # Static type checking (flow)
+yarn build          # Build everything in production mode (flow + webpack)
 
-npm run watch # Run webpack in watch mode
+yarn watch          # Run webpack in watch mode
 ```
 ```bash
 # Running server
 cd server
 
-npm install      # Install dependencies
-npm test         # Static type checking (flow)
-npm run build    # Build everything in production mode (flow + babel)
+yarn                # Install dependencies
+yarn test           # Static type checking (flow)
+yarn build          # Build everything in production mode (flow + babel)
 
-npm run watch    # Run babel in watch mode
-npm start [port] # Start the server. Default port is 4321
+yarn watch          # Run babel in watch mode
+yarn start [port]   # Start the server. Default port is 4321
 ```
 
 ### Directory structure
