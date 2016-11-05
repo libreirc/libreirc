@@ -16,12 +16,12 @@ npm run watch # Run webpack in watch mode
 # Running server
 cd server
 
-npm install   # Install dependencies
-npm test      # Static type checking (flow)
-npm run build # Build everything in production mode (flow + babel)
+npm install      # Install dependencies
+npm test         # Static type checking (flow)
+npm run build    # Build everything in production mode (flow + babel)
 
-npm run watch # Run babel in watch mode
-npm start     # Start the server
+npm run watch    # Run babel in watch mode
+npm start [port] # Start the server. Default port is 4321
 ```
 
 ### Directory structure
