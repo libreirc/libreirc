@@ -2,5 +2,3 @@
 /server/node_modules/
 /server/dist/
 /server/public/build/
-
-npm-debug.log
