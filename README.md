@@ -52,4 +52,8 @@ npm start [port] # Start the server. Default port is 4321
     package.json        # Server-side libraries
 ```
 
+--------
+
+[GNU AGPL 3.0 License](LICENSE.md)
+
 [IRCCloud]: https://www.irccloud.com/
