@@ -14,7 +14,7 @@ const prod = [
 ];
 
 module.exports = {
-  entry: './app.js',
+  entry: './main.js',
   context: `${__dirname}/src`,
   output: {
     filename: '_bundle.js',
