@@ -1,8 +1,3 @@
-[ignore]
-.*/node_modules/fbjs
-.*/node_modules/babel-.*
-.*/node_modules/json5/.*/duplicate-keys.json
-
 [options]
 module.name_mapper='^.*\.\(css\|styl\|txt\)$' -> 'empty/object'
 suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
