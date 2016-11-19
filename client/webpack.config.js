@@ -33,7 +33,12 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel',
-        query: { presets: ['es2015', 'stage-3', 'react'] }
+        query: { presets: ['latest'] }
+      },
+      {
+        test: /\.elm$/,
+        exclude: [/elm-stuff/, /node_modules/],
+        loader: 'elm-webpack'
       }
     ]
   },
