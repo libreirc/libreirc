@@ -1,5 +1,2 @@
-# Dependencies
-/node_modules/
-
 # Client side build result
 /public/build/

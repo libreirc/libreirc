@@ -27,8 +27,7 @@ Join our IRC channel if you're interested!
     ▸ build/            # Build results of client-side assets
       ...
       index.html
-  ▸ src/                # Server-side codes (node.js)
-    package.json        # Server-side libraries
+  ▸ src/                # Server-side codes
     ...
 ```
 
