@@ -8,37 +8,18 @@ Join our IRC channel if you're interested!
 - **#openirc** of [Ozinger IRC network]
 - **#openirc-test** of [Ozinger IRC network]
 
-### Intructions
-```bash
-# Building client-side codes
-cd client
-
-yarn                # Install dependencies
-yarn test           # Static type checking (flow)
-yarn build          # Build everything in production mode (flow + webpack)
-
-yarn watch          # Run webpack in watch mode
-```
-```bash
-# Running server
-cd server
-
-yarn                # Install dependencies
-yarn test           # Static type checking (flow)
-
-yarn start [port]   # Start the server. Default port is 4321
-```
-
 ### Directory structure
+[Client side codes](client/)
 ```bash
-# Client side codes
 ▾ client/
   ▸ src/                # Client-side assets (js, css, ...)
     package.json        # Client-side libraries
     webpack.config.js
     ...
+```
 
-# Server side codes
+[Server side codes](server/)
+```bash
 ▾ server/
   ▾ public/             # Files that will be statically served
     ▸ build/            # Build results of client-side assets
