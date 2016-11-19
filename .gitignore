@@ -1,8 +1,0 @@
-# Client side dependencies
-/client/node_modules/
-/client/elm-stuff/
-
-# Server side dependencies
-/server/node_modules/
-# Client side dependencies
-/server/public/build/
