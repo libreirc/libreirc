@@ -1,22 +1,44 @@
 module App exposing (..)
 
-import Html exposing (Html, button, div, text)
+import String exposing (dropRight)
+import Html exposing (..)
 import Html.App as App
-import Html.Events exposing (onClick)
-import Html.Attributes exposing (id, class)
+import Html.Events exposing (onClick, onInput)
+import Html.Attributes exposing (id, class, placeholder, value)
 
 main = App.beginnerProgram {
-  model = 0,
+  model = model,
   view = view,
   update = update }
 
-type Msg = Increment | Decrement
 
+-- Model
+type alias Model = {
+  logs : List String,
+  typing : String }
+
+model = Model [] ""
+
+
+-- Update
+type Msg
+  = Message
+  | Typing String
+
+update : Msg -> Model -> Model
 update msg model = case msg of
-  Increment -> model + 1
-  Decrement -> model - 1
+  Message     -> { model | typing = "", logs = model.logs ++ [model.typing] }
+  Typing msg  -> { model | typing = msg }
 
-view model = div [ id "main" ] [
-  button [ onClick Decrement ] [ text "-" ],
-  div [ class "counter" ] [ text (toString model) ],
-  button [ onClick Increment ] [ text "+" ] ]
+
+-- View
+view : Model -> Html Msg
+view model = div [ id "openirc" ] [
+  ul [] (
+    List.map (\elem ->
+      li [] [text elem]
+    ) model.logs
+  ),
+  span [] [ text "김젼" ],
+  input [ value model.typing, placeholder "Hi!", onInput Typing ] [],
+  button [ onClick Message ] [ text "+" ] ]
