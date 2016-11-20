@@ -18,14 +18,14 @@ main =
 
 
 -- Model
-type alias Message =
+type alias Line =
   {
     nick : String,
     text : String
   }
 type alias Model =
   {
-    logs : List Message,
+    logs : List Line,
     nick : String,
     typing : String
   }
@@ -34,19 +34,19 @@ model : Model
 model = Model [] "김젼" ""
 
 -- Update
-type Msg = SendMessage
+type Msg = SendLine
          | Typing String
          | Noop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = case msg of
-  SendMessage ->
+  SendLine ->
     if isEmpty model.typing
     then ( model, Cmd.none )
     else (
       { model |
       typing = "",
-      logs = model.logs ++ [Message model.nick model.typing]
+      logs = model.logs ++ [Line model.nick model.typing]
       },
       Task.attempt (\_ -> Noop) (toBottom "logs")
     )
@@ -62,7 +62,7 @@ view model =
         li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
       ) model.logs
     ),
-    form [onSubmit SendMessage] [
+    form [onSubmit SendLine] [
       label [] [text "김젼"],
       input [value model.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
       input [type_ "submit", value "전송"] []
