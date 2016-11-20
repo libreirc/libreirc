@@ -6,5 +6,7 @@ OpenIRC server
 
 ### Instructions
 ```bash
-./run
+./install   # Install dependencies
+./run       # Start server
+            # See http://127.0.0.1:4321
 ```
