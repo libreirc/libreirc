@@ -4,7 +4,9 @@ from sanic.response import json
 app = Sanic(__name__)
 
 # Static file serving
-# TODO: static file serving need to be used only in debug mode
+#
+# TODO: static file serving need to be used only in debug mode.
+# See https://github.com/openirc/openirc/issues/8 for the further details.
 app.static('/', './public/index.html')
 app.static('*', './public')
 
