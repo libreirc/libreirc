@@ -1,5 +1,5 @@
-# Dependencies
-/node_modules/
+# Server side dependencies
+/.venv/
 
 # Client side build result
 /public/build/

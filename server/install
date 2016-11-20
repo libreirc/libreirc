@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use Cwd;
+use File::Basename;
+
+# Change working directory to the script directory
+chdir dirname(__FILE__);
+
+# Execute `sh` in new CWD
+exec <<EOF
+
+# Create new venv or use existing venv
+python3 -m venv .venv &&
+
+# Activate venv
+source .venv/bin/activate &&
+
+# Upgrade pip
+pip install --upgrade pip &&
+
+# Install dependencies
+pip install -r requirements.txt
+
+EOF

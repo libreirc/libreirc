@@ -1,10 +1,12 @@
 OpenIRC server
 ========
 
-### Intructions
-```bash
-yarn                # Install dependencies
-yarn test           # Static type checking (flow)
+### Prerequisite
+- Python 3.5+
 
-yarn start [port]   # Start the server. Default port is 4321
+### Instructions
+```bash
+./install   # Install dependencies
+./run       # Start server
+            # See http://127.0.0.1:4321
 ```

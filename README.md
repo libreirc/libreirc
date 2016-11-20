@@ -15,7 +15,7 @@ Join our IRC channel if you're interested!
 ```bash
 ▾ client/
   ▸ src/                # Client-side assets (js, css, ...)
-    package.json        # Client-side libraries
+    package.json        # Client-side libraries, build dependencies
     webpack.config.js
     ...
 ```
@@ -27,8 +27,8 @@ Join our IRC channel if you're interested!
     ▸ build/            # Build results of client-side assets
       ...
       index.html
-  ▸ src/                # Server-side codes (node.js)
-    package.json        # Server-side libraries
+  ▸ src/                # Server-side codes (python)
+    requirements.txt    # Server-side dependencies
     ...
 ```
 
