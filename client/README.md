@@ -3,8 +3,9 @@ Web client
 
 ### Intructions
 ```bash
-# Building client-side codes
-yarn                # Install dependencies
+# Install dependencies
+yarn && yarn elm-package install
+
 yarn test           # Static type checking (flow)
 yarn build          # Build everything in production mode (flow + webpack)
 
