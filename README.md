@@ -27,7 +27,7 @@ Join our IRC channel if you're interested!
     ▸ build/            # Build results of client-side assets
       ...
       index.html
-  ▸ src/                # Server-side codes
+    run                 # Server-side codes (python)
     ...
 ```
 
