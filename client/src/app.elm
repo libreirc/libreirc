@@ -5,6 +5,9 @@ import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (id, class, type_, placeholder, value)
 
+import Task exposing (Task)
+import Dom.Scroll exposing (toBottom)
+
 main =
   Html.program {
     init = ( model, Cmd.none ),
@@ -33,6 +36,7 @@ model = Model [] "김젼" ""
 -- Update
 type Msg = SendMessage
          | Typing String
+         | Noop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = case msg of
@@ -44,15 +48,16 @@ update msg model = case msg of
       typing = "",
       logs = model.logs ++ [Message model.nick model.typing]
       },
-      Cmd.none
+      Task.attempt (\_ -> Noop) (toBottom "logs")
     )
   Typing msg -> ( { model | typing = msg }, Cmd.none )
+  Noop -> ( model, Cmd.none )
 
 -- View
 view : Model -> Html Msg
 view model =
   div [ id "openirc" ] [
-    ul [] (
+    ul [ id "logs" ] (
       List.map (\msg ->
         li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
       ) model.logs
