@@ -6,10 +6,11 @@ import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (id, class, type_, placeholder, value)
 
 main =
-  Html.beginnerProgram {
-    model = model,
+  Html.program {
+    init = ( model, Cmd.none ),
     view = view,
-    update = update
+    update = update,
+    subscriptions = \_ -> Sub.none
   }
 
 
@@ -29,25 +30,26 @@ type alias Model =
 model : Model
 model = Model [] "김젼" ""
 
-
 -- Update
-type Action = SendMessage
-            | Typing String
+type Msg = SendMessage
+         | Typing String
 
-update : Action -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model = case msg of
   SendMessage ->
     if isEmpty model.typing
-    then model
-    else { model |
+    then ( model, Cmd.none )
+    else (
+      { model |
       typing = "",
       logs = model.logs ++ [Message model.nick model.typing]
-    }
-  Typing msg -> { model | typing = msg }
-
+      },
+      Cmd.none
+    )
+  Typing msg -> ( { model | typing = msg }, Cmd.none )
 
 -- View
-view : Model -> Html Action
+view : Model -> Html Msg
 view model =
   div [ id "openirc" ] [
     ul [] (
