@@ -2,7 +2,7 @@ OpenIRC server
 ========
 
 ### Prerequisite
-- Python 3.5+
+- [Python] 3.5+
 
 ### Instructions
 ```bash
@@ -10,3 +10,5 @@ OpenIRC server
 ./run       # Start server
             # See http://127.0.0.1:4321
 ```
+
+[Python]: https://www.python.org

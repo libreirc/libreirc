@@ -1,14 +1,16 @@
 Web client
 ========
 
+### Prerequisite
+- [yarn] *or* [npm]
+
 ### Intructions
 ```bash
-# Install dependencies
-yarn && yarn elm-package install
+yarn ii       # Install dependencies (yarn install + elm-package install)
+yarn build    # Build everything in production mode
 
-# Build everything in production mode
-yarn build
-
-# Run webpack in watch mode
-yarn watch
+yarn watch    # Run webpack in watch mode
 ```
+
+[yarn]: https://yarnpkg.com
+[npm]: https://www.npmjs.com

@@ -1,6 +1,7 @@
 {
   "license": "AGPL-3.0",
   "scripts": {
+    "ii": "yarn && elm-package install",
     "build": "NODE_ENV=production webpack -p",
     "watch": "webpack --watch"
   },
