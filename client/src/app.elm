@@ -2,11 +2,10 @@ module App exposing (..)
 
 import String exposing (dropRight)
 import Html exposing (..)
-import Html.App as App
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (id, class, placeholder, value)
 
-main = App.beginnerProgram {
+main = Html.beginnerProgram {
   model = model,
   view = view,
   update = update }
