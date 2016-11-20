@@ -1,3 +1,17 @@
-#!/usr/bin/env bash
-source .venv/bin/activate
+#!/usr/bin/env perl
+use Cwd;
+use File::Basename;
+
+# Change working directory to the script directory
+chdir dirname(__FILE__);
+
+# Execute `sh` in new CWD
+exec <<EOF
+
+# Activate venv
+source .venv/bin/activate &&
+
+# Start server
 python src/main.py
+
+EOF
