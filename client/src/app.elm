@@ -1,6 +1,6 @@
 module App exposing (..)
 
-import String exposing (dropRight)
+import String exposing (isEmpty)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (id, class, type_, placeholder, value)
@@ -29,8 +29,11 @@ type Msg = Message
 
 update : Msg -> Model -> Model
 update msg model = case msg of
-  Message     -> { model | typing = "", logs = model.logs ++ [model.typing] }
-  Typing msg  -> { model | typing = msg }
+  Message ->
+    if isEmpty model.typing
+    then model
+    else { model | typing = "", logs = model.logs ++ [model.typing] }
+  Typing msg -> { model | typing = msg }
 
 
 -- View
