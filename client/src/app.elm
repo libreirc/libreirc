@@ -14,25 +14,35 @@ main =
 
 
 -- Model
+type alias Message =
+  {
+    nick : String,
+    text : String
+  }
 type alias Model =
   {
-    logs : List String,
+    logs : List Message,
+    nick : String,
     typing : String
   }
 
-model = Model [] ""
+model : Model
+model = Model [] "김젼" ""
 
 
 -- Update
-type Action = Message
-         | Typing String
+type Action = SendMessage
+            | Typing String
 
 update : Action -> Model -> Model
 update msg model = case msg of
-  Message ->
+  SendMessage ->
     if isEmpty model.typing
     then model
-    else { model | typing = "", logs = model.logs ++ [model.typing] }
+    else { model |
+      typing = "",
+      logs = model.logs ++ [Message model.nick model.typing]
+    }
   Typing msg -> { model | typing = msg }
 
 
@@ -41,11 +51,11 @@ view : Model -> Html Action
 view model =
   div [ id "openirc" ] [
     ul [] (
-      List.map (\elem ->
-        li [] [text elem]
+      List.map (\msg ->
+        li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
       ) model.logs
     ),
-    form [onSubmit Message] [
+    form [onSubmit SendMessage] [
       p [] [
         label [] [text "김젼"],
         input [value model.typing, placeholder "Hi!", onInput Typing] [],
