@@ -24,10 +24,10 @@ model = Model [] ""
 
 
 -- Update
-type Msg = Message
+type Action = Message
          | Typing String
 
-update : Msg -> Model -> Model
+update : Action -> Model -> Model
 update msg model = case msg of
   Message ->
     if isEmpty model.typing
@@ -37,7 +37,7 @@ update msg model = case msg of
 
 
 -- View
-view : Model -> Html Msg
+view : Model -> Html Action
 view model =
   div [ id "openirc" ] [
     ul [] (
