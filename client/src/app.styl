@@ -1,5 +1,5 @@
-html, body
-  height: 100vh
+* { box-sizing: border-box }
+body { height: 100vh }
 
 #openirc
   height: 100%
@@ -9,7 +9,7 @@ html, body
 
   > ul
     margin: 0
-    padding-left: 0
+    padding: 10px
 
     flex: 1 1 auto
     overflow-y: auto
@@ -19,4 +19,19 @@ html, body
       list-style-type: none
 
   > form
-    background: #f5f5f5
+    background: #e2e2e2
+    padding: 15px
+
+    display: flex
+    align-items: center
+
+    > label
+      margin-right: 7px
+
+    > label + input
+      flex: 1 1 auto
+
+    > input
+      background: none
+      border: none
+      outline: none

@@ -56,10 +56,8 @@ view model =
       ) model.logs
     ),
     form [onSubmit SendMessage] [
-      p [] [
-        label [] [text "김젼"],
-        input [value model.typing, placeholder "Hi!", onInput Typing] [],
-        input [type_ "submit", value "전송"] []
-      ]
+      label [] [text "김젼"],
+      input [value model.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
+      input [type_ "submit", value "전송"] []
     ]
   ]
