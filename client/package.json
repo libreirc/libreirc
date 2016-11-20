@@ -11,6 +11,7 @@
     "babel-loader": "^6.2.8",
     "babel-preset-latest": "^6.16.0",
     "css-loader": "^0.26.0",
+    "elm": "^0.17.0",
     "elm-webpack-loader": "^3.0.6",
     "empty": "^0.10.1",
     "extract-text-webpack-plugin": "^1.0.1",
