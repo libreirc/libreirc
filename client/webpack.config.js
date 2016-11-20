@@ -1,4 +1,3 @@
-// @flow
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -44,5 +43,5 @@ module.exports = {
   },
   plugins: process.env.NODE_ENV !== 'production' ? plugs : plugs.concat(prod),
   devtool: 'source-map',
-  postcss: ()/*: Array<Object>*/ => [autoprefixer]
+  postcss: _ => [autoprefixer]
 };

@@ -6,8 +6,9 @@ Web client
 # Install dependencies
 yarn && yarn elm-package install
 
-yarn test           # Static type checking (flow)
-yarn build          # Build everything in production mode (flow + webpack)
+# Build everything in production mode
+yarn build
 
-yarn watch          # Run webpack in watch mode
+# Run webpack in watch mode
+yarn watch
 ```
