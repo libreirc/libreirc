@@ -96,10 +96,16 @@ view model =
   div [ id "openirc" ] [
     div [id "channels" ] [
       ul [ id "channel-list" ] (
-        li [class "channel-item server-name"] [text "서버 A"] ::
+        [li [class "channel-item server-name"] [text "서버 A"]] ++
         (List.map (\name ->
           li [class "channel-item channel-name", onClick (ChangeChannel name)] [text name]
-        ) (D.keys model.channels))
+        ) (D.keys model.channels)) ++
+        [li [class "channel-item new-channel"] [
+          form [id "new-channel-form"] [
+            input [id "new-channel-text", placeholder "채널 이름", autocomplete False] [],
+            input [id "new-channel-submit", type_ "submit", value "Join"] []
+          ]
+        ]]
       )
     ],
     div [id "current-channel"] [
