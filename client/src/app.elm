@@ -2,7 +2,7 @@ module App exposing (..)
 
 import String exposing (isEmpty)
 import Html exposing (..)
-import Html.Events exposing (onSubmit, onInput)
+import Html.Events exposing (onSubmit, onInput, onClick)
 import Html.Attributes exposing (id, class, type_, placeholder, value)
 import Dict exposing (Dict)
 import Dict as D
@@ -57,6 +57,7 @@ getCurrentChannel model =
 -- Update
 type Msg = SendLine
          | Typing String
+         | ChangeChannel String
          | Noop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -73,6 +74,8 @@ update msg model =
         )
     Typing msg ->
       (updateCurrentChannel model { currentChannel | typing = msg }, Cmd.none)
+    ChangeChannel name ->
+      ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
     Noop -> ( model, Cmd.none )
 
 updateCurrentChannel : Model -> Channel -> Model
@@ -86,6 +89,11 @@ view : Model -> Html Msg
 view model =
   let currentChannel = getCurrentChannel model in
   div [ id "openirc" ] [
+    ul [ id "channels" ] (
+      List.map (\name ->
+        li [onClick (ChangeChannel name)] [text name]
+      ) (D.keys model.channels)
+    ),
     ul [ id "logs" ] (
       List.map (\msg ->
         li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
