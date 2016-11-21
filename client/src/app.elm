@@ -29,29 +29,29 @@ type alias Line =
 
 type alias Channel =
   {
-    nick : String,
     logs : List Line,
     newLine : String
   }
 
 type alias Model =
   {
+    nick : String,
     currentName : String,
     newName : String,
     channels : Dict String Channel
   }
 
 model : Model
-model = Model "#a" "" (D.fromList [
-  ("#a", Channel "알파카" [] ""),
-  ("#b", Channel "고양이" [] ""),
-  ("#c", Channel "펭귄" [] "")
+model = Model "알파카" "#a" "" (D.fromList [
+  ("#a", Channel [] ""),
+  ("#b", Channel [] ""),
+  ("#c", Channel [] "")
   ])
 
 getCurrentChannel : Model -> Channel
 getCurrentChannel model =
   case D.get model.currentName model.channels of
-    Nothing -> Channel "#error" [Line "error" "no such channel"] ""
+    Nothing -> Channel [Line "error" "no such channel"] ""
     Just channel -> channel
 
 
@@ -72,7 +72,7 @@ update msg model =
         then ( model, Cmd.none )
         else (
           updateCurrentChannel model { currentChannel | newLine = "",
-          logs = currentChannel.logs ++ [Line currentChannel.nick currentChannel.newLine]
+          logs = currentChannel.logs ++ [Line model.nick currentChannel.newLine]
           }, Task.attempt (\_ -> Noop) (toBottom "logs")
         )
     TypeNewLine msg ->
@@ -84,7 +84,7 @@ update msg model =
       then ( model, Cmd.none ) {- Error notification logic should be added -}
       else (
         { model
-        | channels = (D.insert model.newName (Channel currentChannel.nick [] "") model.channels), newName = ""
+        | channels = (D.insert model.newName (Channel [] "") model.channels), newName = ""
         }, Task.perform identity (Task.succeed (ChangeChannel model.newName))
         )
     ChangeChannel name ->
@@ -124,7 +124,7 @@ view model =
         ) currentChannel.logs
       ),
       form [ id "new-line-form", onSubmit SendLine] [
-        label [id "new-line-label"] [text currentChannel.nick],
+        label [id "new-line-label"] [text model.nick],
         input [id "new-line-text", value currentChannel.newLine,
             placeholder "메세지를 입력하세요", autocomplete False,
             onInput TypeNewLine] [],
