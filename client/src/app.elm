@@ -37,11 +37,12 @@ type alias Channel =
 type alias Model =
   {
     currentName : String,
+    newName : String,
     channels : Dict String Channel
   }
 
 model : Model
-model = Model "#a" (D.fromList [
+model = Model "#a" "" (D.fromList [
   ("#a", Channel "알파카" [] ""),
   ("#b", Channel "고양이" [] ""),
   ("#c", Channel "펭귄" [] "")
@@ -57,6 +58,7 @@ getCurrentChannel model =
 -- Update
 type Msg = SendLine
          | TypeNewLine String
+         | TypeNewName String
          | CreateChannel String
          | ChangeChannel String
          | Noop
@@ -75,6 +77,8 @@ update msg model =
         )
     TypeNewLine msg ->
       (updateCurrentChannel model { currentChannel | newLine = msg }, Cmd.none)
+    TypeNewName msg ->
+      ( { model | newName = msg }, Cmd.none )
     CreateChannel name ->
       if D.member name model.channels
       then ( model, Cmd.none ) {- Error notification logic should be added -}
@@ -102,7 +106,8 @@ view model =
         ) (D.keys model.channels)) ++
         [li [class "channel-item new-channel"] [
           form [id "new-channel-form"] [
-            input [id "new-channel-text", placeholder "채널 이름", autocomplete False] [],
+            input [id "new-channel-text", placeholder "채널 이름",
+                autocomplete False, value model.newName, onInput TypeNewName] [],
             input [id "new-channel-submit", type_ "submit", value "Join"] []
           ]
         ]]
