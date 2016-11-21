@@ -89,11 +89,14 @@ view : Model -> Html Msg
 view model =
   let currentChannel = getCurrentChannel model in
   div [ id "openirc" ] [
-    ul [ id "channels" ] (
-      List.map (\name ->
-        li [onClick (ChangeChannel name)] [text name]
-      ) (D.keys model.channels)
-    ),
+    div [id "channels" ] [
+      ul [ id "channel-list" ] (
+        li [class "channel channel-heading"] [text "채널들"] ::
+        (List.map (\name ->
+          li [class "channel channel-item", onClick (ChangeChannel name)] [text name]
+        ) (D.keys model.channels))
+      )
+    ],
     ul [ id "logs" ] (
       List.map (\msg ->
         li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
