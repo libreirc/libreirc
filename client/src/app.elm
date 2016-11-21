@@ -3,7 +3,7 @@ module App exposing (..)
 import String exposing (isEmpty)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput, onClick)
-import Html.Attributes exposing (id, class, type_, placeholder, value)
+import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
 import Dict exposing (Dict)
 import Dict as D
 
@@ -105,7 +105,9 @@ view model =
       ),
       form [ id "typing-form", onSubmit SendLine] [
         label [id "typing-label"] [text currentChannel.nick],
-        input [id "typing-text", value currentChannel.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
+        input [id "typing-text", value currentChannel.typing,
+            placeholder "메세지를 입력하세요", autocomplete False,
+            onInput Typing] [],
         input [id "typing-submit", type_ "submit", value "전송"] []
       ]
     ]
