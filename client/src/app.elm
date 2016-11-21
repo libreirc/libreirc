@@ -36,7 +36,7 @@ type alias Channel =
 
 type alias Model =
   {
-    currentChannel : String,
+    currentName : String,
     channels : Dict String Channel
   }
 
@@ -48,6 +48,12 @@ model = Model "#a" (D.fromList [
   ])
 
 
+getCurrentChannel : Model -> Channel
+getCurrentChannel model =
+  case D.get model.currentName model.channels of
+    Nothing -> Channel "#error" [Line "error" "no such channel"] ""
+    Just channel -> channel
+
 -- Update
 type Msg = SendLine
          | Typing String
@@ -55,51 +61,29 @@ type Msg = SendLine
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+  let currentChannel = getCurrentChannel model in
   case msg of
     SendLine ->
-        if D.isEmpty (
-          D.filter (\name channel ->
-            name == model.currentChannel && channel.typing /= "")
-            model.channels
-            )
+        if isEmpty currentChannel.typing
         then ( model, Cmd.none )
         else (
-          { model | channels =
-            D.update model.currentChannel addLineToLogs model.channels
-          },
-          Task.attempt (\_ -> Noop) (toBottom "logs")
+          updateCurrentChannel model { currentChannel | typing = "",
+          logs = currentChannel.logs ++ [Line currentChannel.nick currentChannel.typing]
+          }, Task.attempt (\_ -> Noop) (toBottom "logs")
         )
-    Typing msg -> (
-      { model |
-        channels =
-          D.update model.currentChannel (handleTyping msg) model.channels
-        }, Cmd.none)
+    Typing msg ->
+      (updateCurrentChannel model { currentChannel | typing = msg }, Cmd.none)
     Noop -> ( model, Cmd.none )
 
-addLineToLogs : Maybe Channel -> Maybe Channel
-addLineToLogs mChannel = case mChannel of
-  Nothing -> Nothing
-  Just channel ->
-    Just { channel |
-      typing = "",
-      logs = channel.logs ++ [Line channel.nick channel.typing]
-      }
-
-handleTyping : String -> (Maybe Channel -> Maybe Channel)
-handleTyping msg = (\mChannel ->
-  case mChannel of
-    Nothing -> Nothing
-    Just channel -> Just { channel | typing = msg }
-  )
+updateCurrentChannel : Model -> Channel -> Model
+updateCurrentChannel model updatedCurrentChannel =
+  { model
+  | channels = D.insert model.currentName updatedCurrentChannel model.channels }
 
 -- View
 view : Model -> Html Msg
 view model =
-  let currentChannel =
-      case (Dict.get model.currentChannel model.channels) of
-        Nothing -> Channel "#error" [Line "error" "no such channel"] ""
-        Just channel -> channel
-  in
+  let currentChannel = getCurrentChannel model in
   div [ id "openirc" ] [
     ul [ id "logs" ] (
       List.map (\msg ->
