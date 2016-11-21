@@ -31,7 +31,7 @@ type alias Channel =
   {
     nick : String,
     logs : List Line,
-    typing : String
+    newLine : String
   }
 
 type alias Model =
@@ -56,7 +56,7 @@ getCurrentChannel model =
 
 -- Update
 type Msg = SendLine
-         | Typing String
+         | TypeNewLine String
          | CreateChannel String
          | ChangeChannel String
          | Noop
@@ -66,15 +66,15 @@ update msg model =
   let currentChannel = getCurrentChannel model in
   case msg of
     SendLine ->
-        if isEmpty currentChannel.typing
+        if isEmpty currentChannel.newLine
         then ( model, Cmd.none )
         else (
-          updateCurrentChannel model { currentChannel | typing = "",
-          logs = currentChannel.logs ++ [Line currentChannel.nick currentChannel.typing]
+          updateCurrentChannel model { currentChannel | newLine = "",
+          logs = currentChannel.logs ++ [Line currentChannel.nick currentChannel.newLine]
           }, Task.attempt (\_ -> Noop) (toBottom "logs")
         )
-    Typing msg ->
-      (updateCurrentChannel model { currentChannel | typing = msg }, Cmd.none)
+    TypeNewLine msg ->
+      (updateCurrentChannel model { currentChannel | newLine = msg }, Cmd.none)
     CreateChannel name ->
       if D.member name model.channels
       then ( model, Cmd.none ) {- Error notification logic should be added -}
@@ -114,12 +114,12 @@ view model =
           li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
         ) currentChannel.logs
       ),
-      form [ id "typing-form", onSubmit SendLine] [
-        label [id "typing-label"] [text currentChannel.nick],
-        input [id "typing-text", value currentChannel.typing,
+      form [ id "new-line-form", onSubmit SendLine] [
+        label [id "new-line-label"] [text currentChannel.nick],
+        input [id "new-line-text", value currentChannel.newLine,
             placeholder "메세지를 입력하세요", autocomplete False,
-            onInput Typing] [],
-        input [id "typing-submit", type_ "submit", value "전송"] []
+            onInput TypeNewLine] [],
+        input [id "new-line-submit", type_ "submit", value "전송"] []
       ]
     ]
   ]
