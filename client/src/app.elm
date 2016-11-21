@@ -57,6 +57,7 @@ getCurrentChannel model =
 -- Update
 type Msg = SendLine
          | Typing String
+         | CreateChannel String
          | ChangeChannel String
          | Noop
 
@@ -74,6 +75,10 @@ update msg model =
         )
     Typing msg ->
       (updateCurrentChannel model { currentChannel | typing = msg }, Cmd.none)
+    CreateChannel name ->
+      if D.member name model.channels
+      then ( model, Cmd.none ) {- Error notification logic should be added -}
+      else ( { model | channels = (D.insert name (Channel currentChannel.nick [] "") model.channels) }, Cmd.none )
     ChangeChannel name ->
       ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
     Noop -> ( model, Cmd.none )
