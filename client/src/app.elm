@@ -91,20 +91,22 @@ view model =
   div [ id "openirc" ] [
     div [id "channels" ] [
       ul [ id "channel-list" ] (
-        li [class "channel channel-heading"] [text "채널들"] ::
+        li [class "channel-item server-name"] [text "서버 A"] ::
         (List.map (\name ->
-          li [class "channel channel-item", onClick (ChangeChannel name)] [text name]
+          li [class "channel-item channel-name", onClick (ChangeChannel name)] [text name]
         ) (D.keys model.channels))
       )
     ],
-    ul [ id "logs" ] (
-      List.map (\msg ->
-        li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
-      ) currentChannel.logs
-    ),
-    form [onSubmit SendLine] [
-      label [] [text currentChannel.nick],
-      input [value currentChannel.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
-      input [type_ "submit", value "전송"] []
+    div [id "current-channel"] [
+      ul [ id "logs" ] (
+        List.map (\msg ->
+          li [] [text ("<@" ++ msg.nick ++ "> " ++ msg.text)]
+        ) currentChannel.logs
+      ),
+      form [ id "typing-form", onSubmit SendLine] [
+        label [id "typing-label"] [text currentChannel.nick],
+        input [id "typing-text", value currentChannel.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
+        input [id "typing-submit", type_ "submit", value "전송"] []
+      ]
     ]
   ]

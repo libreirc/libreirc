@@ -1,9 +1,15 @@
 * { box-sizing: border-box }
 body { height: 100vh }
 
+#openirc
+  height: 100%
+
+  display: flex
+
+// Channel list tab
 #channels
-  width: 100%
-  background: #e2
+  width: 10%
+  background: #f2
 
 #channel-list
   width: 100%
@@ -12,43 +18,45 @@ body { height: 100vh }
   padding: 1em
 
   display: flex
+  flex-direction: column
 
   list-style-type: none
 
-.channel
-  margin 0 1em
+.channel-item
+  margin 0.5em 0
 
-#openirc
-  height: 100%
+
+// Current channel tab
+#current-channel
+  width: 90%
 
   display: flex
   flex-direction: column
 
-  > ul
-    margin: 0
-    padding: 10px
+#logs
+  margin: 0
+  padding: 10px
 
-    flex: 1 1 auto
-    overflow-y: auto
-    min-height: 0px
+  flex: 1 1 auto
+  overflow-y: auto
+  min-height: 0px
 
-    > li
-      list-style-type: none
+  list-style-type: none
 
-  > form
-    background: #e2e2e2
-    padding: 15px
+#typing-form
+  background: #e2e2e2
+  padding: 15px
 
-    display: flex
-    align-items: center
+  display: flex
+  align-items: center
 
-    > label
-      margin-right: 7px
+#typing-label
+  margin-right: 7px
 
-    > label + input
-      flex: 1 1 auto
+#typing-text
+  flex: 1 1 auto
 
-    > input
-      background: none
-      border: none
-      outline: none
+#typing-text, #typing-submit
+    background: none
+    border: none
+    outline: none
