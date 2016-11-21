@@ -59,7 +59,7 @@ getCurrentChannel model =
 type Msg = SendLine
          | TypeNewLine String
          | TypeNewName String
-         | CreateChannel String
+         | CreateChannel
          | ChangeChannel String
          | Noop
 
@@ -79,10 +79,14 @@ update msg model =
       (updateCurrentChannel model { currentChannel | newLine = msg }, Cmd.none)
     TypeNewName msg ->
       ( { model | newName = msg }, Cmd.none )
-    CreateChannel name ->
-      if D.member name model.channels
+    CreateChannel ->
+      if D.member model.newName model.channels
       then ( model, Cmd.none ) {- Error notification logic should be added -}
-      else ( { model | channels = (D.insert name (Channel currentChannel.nick [] "") model.channels) }, Cmd.none )
+      else (
+        { model
+        | channels = (D.insert model.newName (Channel currentChannel.nick [] "") model.channels), newName = ""
+        }, Task.perform identity (Task.succeed (ChangeChannel model.newName))
+        )
     ChangeChannel name ->
       ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
     Noop -> ( model, Cmd.none )
@@ -105,7 +109,7 @@ view model =
           li [class "channel-item channel-name", onClick (ChangeChannel name)] [text name]
         ) (D.keys model.channels)) ++
         [li [class "channel-item new-channel"] [
-          form [id "new-channel-form"] [
+          form [id "new-channel-form", onSubmit CreateChannel] [
             input [id "new-channel-text", placeholder "채널 이름",
                 autocomplete False, value model.newName, onInput TypeNewName] [],
             input [id "new-channel-submit", type_ "submit", value "Join"] []
