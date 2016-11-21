@@ -107,7 +107,7 @@ view model =
       ) currentChannel.logs
     ),
     form [onSubmit SendLine] [
-      label [] [text "김젼"],
+      label [] [text currentChannel.nick],
       input [value currentChannel.typing, placeholder "메세지를 입력하세요", onInput Typing] [],
       input [type_ "submit", value "전송"] []
     ]
