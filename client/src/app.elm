@@ -91,13 +91,15 @@ update msg model =
     ChangeChannel name ->
       ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
     CloseChannel name ->
-      ( {
-        model
-        | currentName = case List.head (D.keys model.channels) of
-            Nothing -> "Joined to no channel"
-            Just name -> name
-        , channels = D.filter (\channerName _ -> channerName /= name) model.channels
-        }, Task.attempt (\_ -> Noop) (toBottom "logs") )
+      let
+        remainingChannels = D.filter (\channelName _ -> channelName /= name) model.channels
+        newCurrentName =
+          case List.head (D.keys remainingChannels) of
+            Just newCurrentName -> newCurrentName
+            Nothing -> ""
+      in
+        ( { model | channels = remainingChannels }
+          , Task.perform identity (Task.succeed (ChangeChannel newCurrentName)))
     Noop -> ( model, Cmd.none )
 
 updateCurrentChannel : Model -> Channel -> Model
