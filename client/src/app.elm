@@ -117,7 +117,7 @@ view model =
         (List.map (\name ->
           li [class "channel-item channel-name", onClick (ChangeChannel name)] [
             text name,
-            a [class "channel-close"] [text "✘"]
+            a [class "channel-close", onClick (CloseChannel name)] [text "✘"]
           ]
         ) (D.keys model.channels)) ++
         [li [class "channel-item new-channel"] [
