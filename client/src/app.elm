@@ -81,7 +81,7 @@ update msg model =
     TypeNewName msg ->
       ( { model | newName = msg }, Cmd.none )
     CreateChannel ->
-      if (D.member model.newName model.channels || model.newName == "")
+      if (D.member model.newName model.channels || isEmpty model.newName)
       then ( model, Cmd.none ) {- Error notification logic should be added -}
       else (
         { model
