@@ -106,7 +106,10 @@ view model =
       ul [ id "channel-list" ] (
         [li [class "channel-item server-name"] [text "서버 A"]] ++
         (List.map (\name ->
-          li [class "channel-item channel-name", onClick (ChangeChannel name)] [text name]
+          li [class "channel-item channel-name", onClick (ChangeChannel name)] [
+            text name,
+            a [class "channel-close"] [text "✘"]
+          ]
         ) (D.keys model.channels)) ++
         [li [class "channel-item new-channel"] [
           form [id "new-channel-form", onSubmit CreateChannel] [
