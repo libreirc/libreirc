@@ -115,7 +115,9 @@ view model =
       ul [ id "channel-list" ] (
         [li [class "channel-item server-name"] [text "서버 A"]] ++
         (List.map (\name ->
-          li [class "channel-item channel-name", onClick (ChangeChannel name)] [
+          li [class (if name == model.currentName
+          then "channel-item channel-name channel-selected"
+          else "channel-item channel-name"), onClick (ChangeChannel name)] [
             text name,
             a [class "channel-close", onClick (CloseChannel name)] [text "✘"]
           ]
