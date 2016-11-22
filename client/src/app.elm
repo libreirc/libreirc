@@ -61,6 +61,7 @@ type Msg = SendLine
          | TypeNewName String
          | CreateChannel
          | ChangeChannel String
+         | CloseChannel String
          | Noop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -89,6 +90,14 @@ update msg model =
         )
     ChangeChannel name ->
       ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
+    CloseChannel name ->
+      ( {
+        model
+        | currentName = case List.head (D.keys model.channels) of
+            Nothing -> "Joined to no channel"
+            Just name -> name
+        , channels = D.filter (\channerName _ -> channerName /= name) model.channels
+        }, Task.attempt (\_ -> Noop) (toBottom "logs") )
     Noop -> ( model, Cmd.none )
 
 updateCurrentChannel : Model -> Channel -> Model
