@@ -51,7 +51,7 @@ model = Model "알파카" "#a" "" (D.fromList [
 getCurrentChannel : Model -> Channel
 getCurrentChannel model =
   case D.get model.currentName model.channels of
-    Nothing -> Channel [Line "error" "no such channel"] ""
+    Nothing -> Channel [Line "NOTICE" "Currently not in a (valid) channel."] ""
     Just channel -> channel
 
 
