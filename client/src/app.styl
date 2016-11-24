@@ -5,33 +5,79 @@ body { height: 100vh }
   height: 100%
 
   display: flex
+
+// Channel list tab
+#channels
+  width: 10%
+  background: #f2
+
+#channel-list
+  width: 100%
+
+  margin: 0
+  padding: 1em
+
+  display: flex
   flex-direction: column
 
-  > ul
-    margin: 0
-    padding: 10px
+  list-style-type: none
 
-    flex: 1 1 auto
-    overflow-y: auto
-    min-height: 0px
+.channel-item
+  margin 0.5em 0
 
-    > li
-      list-style-type: none
+  display: flex
+  justify-content: space-between
 
-  > form
-    background: #e2e2e2
-    padding: 15px
+.channel-selected
+  font-weight: bold
 
-    display: flex
-    align-items: center
+#new-channel-form
+  width: 100%
 
-    > label
-      margin-right: 7px
+  display: flex
 
-    > label + input
-      flex: 1 1 auto
+#new-channel-text, #new-channel-submit
+  background: none
+  border: none
+  outline: none
 
-    > input
-      background: none
-      border: none
-      outline: none
+#new-channel-text
+  width 70%
+
+#new-channel-submit
+  width 30%
+
+// Current channel tab
+#current-channel
+  width: 90%
+
+  display: flex
+  flex-direction: column
+
+#logs
+  margin: 0
+  padding: 10px
+
+  flex: 1 1 auto
+  overflow-y: auto
+  min-height: 0px
+
+  list-style-type: none
+
+#new-line-form
+  background: #e2e2e2
+  padding: 15px
+
+  display: flex
+  align-items: center
+
+#new-line-label
+  margin-right: 7px
+
+#new-line-text
+  flex: 1 1 auto
+
+#new-line-text, #new-line-submit
+  background: none
+  border: none
+  outline: none
