@@ -85,8 +85,8 @@ update msg model =
       then ( model, Cmd.none ) {- Error notification logic should be added -}
       else (
         { model
-        | channels = (D.insert model.newName (Channel [] "") model.channels), newName = ""
-        }, Task.perform identity (Task.succeed (ChangeChannel model.newName))
+        | channels = D.insert model.newName (Channel [] "") model.channels, newName = ""
+        }, Task.perform identity (Task.succeed <| ChangeChannel model.newName)
         )
     ChangeChannel name ->
       ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
@@ -94,12 +94,12 @@ update msg model =
       let
         remainingChannels = D.filter (\channelName _ -> channelName /= name) model.channels
         newCurrentName =
-          case List.head (D.keys remainingChannels) of
+          case List.head <| D.keys remainingChannels of
             Just newCurrentName -> newCurrentName
             Nothing -> ""
       in
         ( { model | channels = remainingChannels }
-          , Task.perform identity (Task.succeed (ChangeChannel newCurrentName)))
+          , Task.perform identity <| Task.succeed <| ChangeChannel newCurrentName)
     Noop -> ( model, Cmd.none )
 
 updateCurrentChannel : Model -> Channel -> Model
@@ -119,9 +119,9 @@ view model =
         (List.map (\name ->
           li [class (if name == model.currentName
           then "channel-item channel-name channel-selected"
-          else "channel-item channel-name"), onClick (ChangeChannel name)] [
+          else "channel-item channel-name"), onClick <| ChangeChannel name] [
             text name,
-            a [class "channel-close", onClick (CloseChannel name)] [text "✘"]
+            a [class "channel-close", onClick <| CloseChannel name] [text "✘"]
           ]
         ) (D.keys model.channels)) ++
         [li [class "channel-item new-channel"] [
