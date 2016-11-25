@@ -1,6 +1,6 @@
 module App exposing (..)
 
-import String exposing (isEmpty)
+import String exposing (isEmpty, startsWith)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput, onClick)
 import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
@@ -160,6 +160,7 @@ update msg model =
                     if
                         (D.member ( currentServerName, newChannelName ) model.bufferIdMap
                             || isEmpty newChannelName
+                            || not (startsWith "#" newChannelName)
                         )
                     then
                         {- Error notification logic should be added -}
