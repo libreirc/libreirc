@@ -29,41 +29,63 @@ type alias Line =
     }
 
 
-type alias Channel =
-    { logs : List Line
+type alias Buffer =
+    { lines : List Line
     , newLine : String
     }
 
 
 type alias Model =
-    { nick : String
-    , currentName : String
-    , newName : String
-    , channels : Dict String Channel
+    { bufferMap : Dict Int Buffer
+    , bufferIdMap : Dict ( String, String ) Int
+    , nickMap : Dict String String
+    , currentBufferId : Int
+    , currentServerName : String
+    , newChannelName : String
     }
 
 
 model : Model
 model =
-    Model "알파카"
-        "#a"
-        ""
+    Model
         (D.fromList
-            [ ( "#a", Channel [] "" )
-            , ( "#b", Channel [] "" )
-            , ( "#c", Channel [] "" )
+            [ ( 0, Buffer [] "" )
+            , ( 1, Buffer [] "" )
+            , ( 2, Buffer [] "" )
             ]
         )
+        (D.fromList
+            [ ( ( "InitServer", "#a" ), 0 )
+            , ( ( "InitServer", "#b" ), 1 )
+            , ( ( "InitServer", "#c" ), 2 )
+            ]
+        )
+        (D.fromList
+            [ ( "InitServer", "InitNick" ) ]
+        )
+        0
+        "InitServer"
+        ""
 
 
-getCurrentChannel : Model -> Channel
-getCurrentChannel model =
-    case D.get model.currentName model.channels of
+getCurrentBuffer : Model -> Buffer
+getCurrentBuffer model =
+    case D.get model.currentBufferId model.bufferMap of
         Nothing ->
-            Channel [ Line "NOTICE" "Currently not in a (valid) channel." ] ""
+            Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
-        Just channel ->
-            channel
+        Just buffer ->
+            buffer
+
+
+getCurrentNick : Model -> String
+getCurrentNick model =
+    case D.get model.currentServerName model.nickMap of
+        Nothing ->
+            "ERROR"
+
+        Just nick ->
+            nick
 
 
 
@@ -74,86 +96,124 @@ type Msg
     = SendLine
     | TypeNewLine String
     | TypeNewName String
-    | CreateChannel
-    | ChangeChannel String
-    | CloseChannel String
+    | CreateBuffer
+    | ChangeBuffer Int
+    | CloseBuffer Int
     | Noop
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        currentChannel =
-            getCurrentChannel model
+        currentBuffer =
+            getCurrentBuffer model
+
+        currentNick =
+            getCurrentNick model
     in
         case msg of
             SendLine ->
                 let
                     newLog =
-                        Line model.nick currentChannel.newLine
+                        Line currentNick currentBuffer.newLine
 
-                    newCurrentChannel =
-                        { currentChannel | newLine = "", logs = currentChannel.logs ++ [ newLog ] }
+                    newCurrentBuffer =
+                        { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
                 in
-                    if isEmpty currentChannel.newLine then
+                    if isEmpty currentBuffer.newLine then
                         ( model, Cmd.none )
                     else
-                        ( updateCurrentChannel model newCurrentChannel, Task.attempt (\_ -> Noop) <| toBottom "logs" )
+                        ( updateCurrentBuffer model newCurrentBuffer, Task.attempt (\_ -> Noop) <| toBottom "logs" )
 
             TypeNewLine msg ->
-                ( updateCurrentChannel model { currentChannel | newLine = msg }
+                ( updateCurrentBuffer model { currentBuffer | newLine = msg }
                 , Cmd.none
                 )
 
             TypeNewName msg ->
-                ( { model | newName = msg }
+                ( { model | newChannelName = msg }
                 , Cmd.none
                 )
 
-            CreateChannel ->
-                if (D.member model.newName model.channels || isEmpty model.newName) then
-                    {- Error notification logic should be added -}
-                    ( model, Cmd.none )
-                else
-                    ( { model | channels = D.insert model.newName (Channel [] "") model.channels, newName = "" }
-                    , Task.perform identity (Task.succeed <| ChangeChannel model.newName)
-                    )
+            CreateBuffer ->
+                let
+                    newBufferId =
+                        case (List.maximum <| D.keys model.bufferMap) of
+                            Just id ->
+                                id + 1
 
-            ChangeChannel name ->
-                ( { model | currentName = name }
+                            Nothing ->
+                                1
+
+                    currentServerName =
+                        model.currentServerName
+
+                    newChannelName =
+                        model.newChannelName
+
+                    newBufferIdMap =
+                        D.insert ( currentServerName, newChannelName ) newBufferId model.bufferIdMap
+
+                    newBufferMap =
+                        D.insert newBufferId (Buffer [] "") model.bufferMap
+                in
+                    if
+                        (D.member ( currentServerName, newChannelName ) model.bufferIdMap
+                            || isEmpty newChannelName
+                        )
+                    then
+                        {- Error notification logic should be added -}
+                        ( model, Cmd.none )
+                    else
+                        ( { model
+                            | bufferIdMap = newBufferIdMap
+                            , bufferMap = newBufferMap
+                            , newChannelName = ""
+                          }
+                        , Task.perform identity (Task.succeed <| ChangeBuffer newBufferId)
+                        )
+
+            ChangeBuffer newBufferId ->
+                ( { model | currentBufferId = newBufferId }
                 , Task.attempt (\_ -> Noop) (toBottom "logs")
                 )
 
-            CloseChannel name ->
+            CloseBuffer closingBufferId ->
                 let
-                    remainingChannels =
-                        model.channels
-                            |> D.filter (\channelName _ -> channelName /= name)
+                    remainingBufferMap =
+                        model.bufferMap
+                            |> D.filter (\bufferId _ -> bufferId /= closingBufferId)
 
-                    newCurrentName =
-                        if model.currentName /= name then
-                            model.currentName
+                    remainingBufferIdMap =
+                        model.bufferIdMap
+                            |> D.filter (\_ bufferId -> bufferId /= closingBufferId)
+
+                    newCurrentBufferId =
+                        if model.currentBufferId /= closingBufferId then
+                            model.currentBufferId
                         else
-                            case List.head <| D.keys remainingChannels of
-                                Just newCurrentName ->
-                                    newCurrentName
+                            case List.head <| D.keys remainingBufferMap of
+                                Just id ->
+                                    id
 
                                 Nothing ->
-                                    ""
+                                    0
                 in
-                    ( { model | channels = remainingChannels }
-                    , Task.perform identity <| Task.succeed <| ChangeChannel newCurrentName
+                    ( { model
+                        | bufferMap = remainingBufferMap
+                        , bufferIdMap = remainingBufferIdMap
+                        , currentBufferId = newCurrentBufferId
+                      }
+                    , Task.perform identity <| Task.succeed <| ChangeBuffer newCurrentBufferId
                     )
 
             Noop ->
                 ( model, Cmd.none )
 
 
-updateCurrentChannel : Model -> Channel -> Model
-updateCurrentChannel model updatedCurrentChannel =
-    { model
-        | channels = D.insert model.currentName updatedCurrentChannel model.channels
-    }
+updateCurrentBuffer : Model -> Buffer -> Model
+updateCurrentBuffer model newBuffer =
+    { model | bufferMap = D.insert model.currentBufferId newBuffer model.bufferMap }
 
 
 
@@ -163,61 +223,81 @@ updateCurrentChannel model updatedCurrentChannel =
 view : Model -> Html Msg
 view model =
     div [ id "openirc" ]
-        [ channelsDiv model
-        , currentChannelDiv model
+        [ buffersDiv model
+        , currentBufferDiv model
         ]
 
 
-channelsDiv : Model -> Html Msg
-channelsDiv model =
-    div [ id "channels" ]
-        [ ul [ id "channel-list" ]
-            ([ serverNameItem "서버 A" ] ++ channelNameItems model ++ [ newChannelItem model ])
+buffersDiv : Model -> Html Msg
+buffersDiv model =
+    div [ id "buffers" ]
+        [ ul [ id "buffer-list" ]
+            ([ serverNameItem "서버 A" ] ++ bufferNameItems model ++ [ newBufferItem model ])
         ]
 
 
 serverNameItem : String -> Html Msg
 serverNameItem name =
-    li [ class "channel-item server-name" ] [ text name ]
+    li [ class "buffer-item server-name" ] [ text name ]
 
 
-channelNameItems : Model -> List (Html Msg)
-channelNameItems model =
+bufferNameItems : Model -> List (Html Msg)
+bufferNameItems model =
     let
-        itemClass name =
-            if name == model.currentName then
-                "channel-item channel-name channel-selected"
-            else
-                "channel-item channel-name"
+        itemClass serverName channelName =
+            case D.get ( serverName, channelName ) model.bufferIdMap of
+                Just id ->
+                    if id == model.currentBufferId then
+                        "buffer-item buffer-name buffer-selected"
+                    else
+                        "buffer-item buffer-name"
 
-        closeAnchor name =
-            a [ class "channel-close", onClick <| CloseChannel name ] [ text "✘" ]
+                Nothing ->
+                    "buffer-item buffer-name"
+
+        getBufferId serverName channelName =
+            case D.get ( serverName, channelName ) model.bufferIdMap of
+                Just id ->
+                    id
+
+                Nothing ->
+                    -1
+
+        closeAnchor bufferId =
+            a [ class "buffer-close", onClick <| CloseBuffer bufferId ] [ text "✘" ]
+
+        render =
+            (\( serverName, channelName ) ->
+                li
+                    [ class (itemClass serverName channelName)
+                    , onClick <| ChangeBuffer (getBufferId serverName channelName)
+                    ]
+                    [ text channelName, closeAnchor (getBufferId serverName channelName) ]
+            )
     in
-        D.keys model.channels
-            |> List.map
-                (\name -> li [ class <| itemClass name, onClick <| ChangeChannel name ] [ text name, closeAnchor name ])
+        List.map render (D.keys model.bufferIdMap)
 
 
-newChannelItem : Model -> Html Msg
-newChannelItem model =
-    li [ class "channel-item new-channel" ]
-        [ form [ id "new-channel-form", onSubmit CreateChannel ]
+newBufferItem : Model -> Html Msg
+newBufferItem model =
+    li [ class "buffer-item new-buffer" ]
+        [ form [ id "new-buffer-form", onSubmit CreateBuffer ]
             [ input
-                [ id "new-channel-text"
+                [ id "new-buffer-text"
                 , placeholder "채널 이름"
                 , autocomplete False
-                , value model.newName
+                , value model.newChannelName
                 , onInput TypeNewName
                 ]
                 []
-            , input [ id "new-channel-submit", type_ "submit", value "Join" ] []
+            , input [ id "new-buffer-submit", type_ "submit", value "Join" ] []
             ]
         ]
 
 
-currentChannelDiv : Model -> Html Msg
-currentChannelDiv model =
-    div [ id "current-channel" ]
+currentBufferDiv : Model -> Html Msg
+currentBufferDiv model =
+    div [ id "current-buffer" ]
         [ logsList model
         , newLineForm model
         ]
@@ -226,26 +306,29 @@ currentChannelDiv model =
 logsList : Model -> Html Msg
 logsList model =
     let
-        currentChannel =
-            getCurrentChannel model
+        currentBuffer =
+            getCurrentBuffer model
     in
         ul [ id "logs" ]
-            (currentChannel.logs
-                |> List.map (\log -> li [] [ text ("<@" ++ log.nick ++ "> " ++ log.text) ])
+            (currentBuffer.lines
+                |> List.map (\line -> li [] [ text ("<@" ++ line.nick ++ "> " ++ line.text) ])
             )
 
 
 newLineForm : Model -> Html Msg
 newLineForm model =
     let
-        currentChannel =
-            getCurrentChannel model
+        currentBuffer =
+            getCurrentBuffer model
+
+        currentNick =
+            getCurrentNick model
     in
         form [ id "new-line-form", onSubmit SendLine ]
-            [ label [ id "new-line-label" ] [ text model.nick ]
+            [ label [ id "new-line-label" ] [ text currentNick ]
             , input
                 [ id "new-line-text"
-                , value currentChannel.newLine
+                , value currentBuffer.newLine
                 , placeholder "메세지를 입력하세요"
                 , autocomplete False
                 , onInput TypeNewLine
