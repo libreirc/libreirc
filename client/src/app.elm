@@ -88,50 +88,58 @@ update msg model =
     in
         case msg of
             SendLine ->
-                if isEmpty currentChannel.newLine then
-                    ( model, Cmd.none )
-                else
-                    ( updateCurrentChannel model
-                        { currentChannel
-                            | newLine = ""
-                            , logs = currentChannel.logs ++ [ Line model.nick currentChannel.newLine ]
-                        }
-                    , Task.attempt (\_ -> Noop) (toBottom "logs")
-                    )
+                let
+                    newLog =
+                        Line model.nick currentChannel.newLine
+
+                    newCurrentChannel =
+                        { currentChannel | newLine = "", logs = currentChannel.logs ++ [ newLog ] }
+                in
+                    if isEmpty currentChannel.newLine then
+                        ( model, Cmd.none )
+                    else
+                        ( updateCurrentChannel model newCurrentChannel, Task.attempt (\_ -> Noop) <| toBottom "logs" )
 
             TypeNewLine msg ->
-                ( updateCurrentChannel model { currentChannel | newLine = msg }, Cmd.none )
+                ( updateCurrentChannel model { currentChannel | newLine = msg }
+                , Cmd.none
+                )
 
             TypeNewName msg ->
-                ( { model | newName = msg }, Cmd.none )
+                ( { model | newName = msg }
+                , Cmd.none
+                )
 
             CreateChannel ->
                 if (D.member model.newName model.channels || isEmpty model.newName) then
-                    ( model, Cmd.none )
                     {- Error notification logic should be added -}
+                    ( model, Cmd.none )
                 else
-                    ( { model
-                        | channels = D.insert model.newName (Channel [] "") model.channels
-                        , newName = ""
-                      }
+                    ( { model | channels = D.insert model.newName (Channel [] "") model.channels, newName = "" }
                     , Task.perform identity (Task.succeed <| ChangeChannel model.newName)
                     )
 
             ChangeChannel name ->
-                ( { model | currentName = name }, Task.attempt (\_ -> Noop) (toBottom "logs") )
+                ( { model | currentName = name }
+                , Task.attempt (\_ -> Noop) (toBottom "logs")
+                )
 
             CloseChannel name ->
                 let
                     remainingChannels =
-                        D.filter (\channelName _ -> channelName /= name) model.channels
+                        model.channels
+                            |> D.filter (\channelName _ -> channelName /= name)
 
                     newCurrentName =
-                        case List.head <| D.keys remainingChannels of
-                            Just newCurrentName ->
-                                newCurrentName
+                        if model.currentName /= name then
+                            model.currentName
+                        else
+                            case List.head <| D.keys remainingChannels of
+                                Just newCurrentName ->
+                                    newCurrentName
 
-                            Nothing ->
-                                ""
+                                Nothing ->
+                                    ""
                 in
                     ( { model | channels = remainingChannels }
                     , Task.perform identity <| Task.succeed <| ChangeChannel newCurrentName
