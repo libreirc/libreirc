@@ -14,6 +14,7 @@ If you are interested in contributing to the OpenIRC project, take a look at our
 development documentation!
 
 - **[Project structure](doc/project-structure.md)**
+- [Setting up your own RabbitMQ cluster](doc/setting-up-rabbitmq-cluster.md)
 
 --------
 
