@@ -156,6 +156,11 @@ fd값을 확인할 수 있다.
 ```bash
 cat /proc/$(pgrep rabbitmq)/limits | grep open
 # 1024
+
+sudo rabbitmqctl status | grep file_desc
+# {file_descriptors,[{total_limit,924},
+
+# 위의 924라는 숫자는 항상 프로세스의 제한인 1024보다 100 작은 값으로 표시된다.
 ```
 
 이 값은 아래와 같이 늘릴 수 있다.
@@ -180,6 +185,36 @@ END
 
 sudo systemctl restart rabbitmq
 ```
+
+### 3. Erlang Cookie 맞추기
+*Erlang Cookie*는 RabbitMQ 클러스터의 노드들이, 서로를 인증하기위해 사용하는
+BASE64 문자열이다. 두 RabbitMQ 노드의 얼랭 쿠키가 같으면 인증에 성공하고, 다르면
+인증에 실패한다.
+
+한가지 알아야하는점은, 같은 머신 안에서도 사용자별로/프로세스별로 독립적인 얼랭
+쿠키를 갖고있다는 점이다. 아래와 같이 여러개 있을 수 있다.
+
+- RabbitMQ 프로세스의 얼랭 쿠키 : `/var/lib/rabbitmq/.erlang.cookie`
+- 루트 계정의 얼랭 쿠키         : `/root/.erlang.cookie`
+- 개인 계정의 얼랭 쿠키         : `~/.erlang.cookie`
+
+여러 머신들의 얼랭 쿠키들을 손으로 직접 `/var/lib/rabbitmq/.erlang.cookie`의
+값을 고치는 식으로 맞춰줘야한다. 이때, newline이 삽입되지 않도록 주의해야한다.
+이하는 예시
+
+```
+echo $(sudo cat /var/lib/rabbitmq/.erlang.cookie)
+# ABCDEFGHIJKLMNOPQRST
+
+echo "ABCDEFGHIJKLMNOPQRST" | sudo tee /var/lib/rabbitmq/.erlang.cookie
+echo "ABCDEFGHIJKLMNOPQRST" | sudo tee /root/.erlang.cookie
+```
+
+루트계정의 얼랭 쿠키도 같이 맞춰주지 않으면, `rabbitmqctl` 커맨드를 사용할 수
+없게된다.
+
+###### Reference
+- https://www.rabbitmq.com/clustering.html#erlang-cookie
 
 <br>
 
