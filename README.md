@@ -2,7 +2,7 @@ OpenIRC
 ========
 > :heartbeat: IRC Client for everyone!
 
-![Preview Screenshot](preview.png)
+![Preview Screenshot](doc/img/preview.png)
 
 Making open source alternative of [IRCCloud] is this project's very first goal.
 Join our IRC channel if you're interested!
@@ -10,27 +10,10 @@ Join our IRC channel if you're interested!
 - **#openirc** of [Ozinger IRC network]
 - **#openirc-test** of [Ozinger IRC network]
 
-### Directory structure
-[Client side codes](client/)
-```bash
-▾ client/
-  ▸ src/                # Client-side assets (js, css, ...)
-    package.json        # Client-side libraries, build dependencies
-    webpack.config.js
-    ...
-```
+If you are interested in contributing to the OpenIRC project, take a look at our
+development documentation!
 
-[Server side codes](server/)
-```bash
-▾ server/
-  ▾ public/             # Files that will be statically served
-    ▸ build/            # Build results of client-side assets
-      ...
-      index.html
-  ▸ src/                # Server-side codes (python)
-    requirements.txt    # Server-side dependencies
-    ...
-```
+- **[Project structure](doc/project-structure.md)**
 
 --------
 
