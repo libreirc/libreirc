@@ -6,6 +6,7 @@ import Html.Events exposing (onSubmit, onInput, onClick)
 import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
 import Dict exposing (Dict)
 import Dict as D
+import Tuple exposing (first, second)
 import Task exposing (Task)
 import Dom.Scroll exposing (toBottom)
 
@@ -36,11 +37,10 @@ type alias Buffer =
 
 
 type alias Model =
-    { bufferMap : Dict Int Buffer
-    , bufferIdMap : Dict ( String, String ) Int
+    { bufferMap : Dict ( String, String ) Buffer
     , nickMap : Dict String String
-    , currentBufferId : Int
     , currentServerName : String
+    , currentChannelName : String
     , newChannelName : String
     }
 
@@ -49,28 +49,22 @@ model : Model
 model =
     Model
         (D.fromList
-            [ ( 0, Buffer [] "" )
-            , ( 1, Buffer [] "" )
-            , ( 2, Buffer [] "" )
-            ]
-        )
-        (D.fromList
-            [ ( ( "InitServer", "#a" ), 0 )
-            , ( ( "InitServer", "#b" ), 1 )
-            , ( ( "InitServer", "#c" ), 2 )
+            [ ( ( "InitServer", "#a" ), Buffer [] "" )
+            , ( ( "InitServer", "#b" ), Buffer [] "" )
+            , ( ( "InitServer", "#c" ), Buffer [] "" )
             ]
         )
         (D.fromList
             [ ( "InitServer", "InitNick" ) ]
         )
-        0
         "InitServer"
+        "#a"
         ""
 
 
 getCurrentBuffer : Model -> Buffer
 getCurrentBuffer model =
-    case D.get model.currentBufferId model.bufferMap of
+    case D.get ( model.currentServerName, model.currentChannelName ) model.bufferMap of
         Nothing ->
             Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
@@ -97,8 +91,8 @@ type Msg
     | TypeNewLine String
     | TypeNewName String
     | CreateBuffer
-    | ChangeBuffer Int
-    | CloseBuffer Int
+    | ChangeBuffer ( String, String )
+    | CloseBuffer ( String, String )
     | Noop
 
 
@@ -137,28 +131,17 @@ update msg model =
 
             CreateBuffer ->
                 let
-                    newBufferId =
-                        case (List.maximum <| D.keys model.bufferMap) of
-                            Just id ->
-                                id + 1
-
-                            Nothing ->
-                                1
-
                     currentServerName =
                         model.currentServerName
 
                     newChannelName =
                         model.newChannelName
 
-                    newBufferIdMap =
-                        D.insert ( currentServerName, newChannelName ) newBufferId model.bufferIdMap
-
                     newBufferMap =
-                        D.insert newBufferId (Buffer [] "") model.bufferMap
+                        D.insert ( currentServerName, newChannelName ) (Buffer [] "") model.bufferMap
                 in
                     if
-                        (D.member ( currentServerName, newChannelName ) model.bufferIdMap
+                        (D.member ( currentServerName, newChannelName ) model.bufferMap
                             || isEmpty newChannelName
                             || not (startsWith "#" newChannelName)
                         )
@@ -167,45 +150,40 @@ update msg model =
                         ( model, Cmd.none )
                     else
                         ( { model
-                            | bufferIdMap = newBufferIdMap
-                            , bufferMap = newBufferMap
+                            | bufferMap = newBufferMap
                             , newChannelName = ""
                           }
-                        , Task.perform identity (Task.succeed <| ChangeBuffer newBufferId)
+                        , Task.perform identity (Task.succeed <| ChangeBuffer ( currentServerName, newChannelName ))
                         )
 
-            ChangeBuffer newBufferId ->
-                ( { model | currentBufferId = newBufferId }
+            ChangeBuffer ( newServerName, newChannelName ) ->
+                ( { model | currentServerName = newServerName, currentChannelName = newChannelName }
                 , Task.attempt (\_ -> Noop) (toBottom "logs")
                 )
 
-            CloseBuffer closingBufferId ->
+            CloseBuffer closingNamePair ->
                 let
                     remainingBufferMap =
                         model.bufferMap
-                            |> D.filter (\bufferId _ -> bufferId /= closingBufferId)
+                            |> D.filter (\namePair _ -> namePair /= closingNamePair)
 
-                    remainingBufferIdMap =
-                        model.bufferIdMap
-                            |> D.filter (\_ bufferId -> bufferId /= closingBufferId)
-
-                    newCurrentBufferId =
-                        if model.currentBufferId /= closingBufferId then
-                            model.currentBufferId
+                    newNamePair =
+                        if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
+                            ( model.currentServerName, model.currentChannelName )
                         else
                             case List.head <| D.keys remainingBufferMap of
-                                Just id ->
-                                    id
+                                Just namePair ->
+                                    namePair
 
                                 Nothing ->
-                                    0
+                                    ( "InitServer", "ERROR" )
                 in
                     ( { model
                         | bufferMap = remainingBufferMap
-                        , bufferIdMap = remainingBufferIdMap
-                        , currentBufferId = newCurrentBufferId
+                        , currentServerName = first newNamePair
+                        , currentChannelName = second newNamePair
                       }
-                    , Task.perform identity <| Task.succeed <| ChangeBuffer newCurrentBufferId
+                    , Task.perform identity <| Task.succeed <| ChangeBuffer newNamePair
                     )
 
             Noop ->
@@ -214,7 +192,7 @@ update msg model =
 
 updateCurrentBuffer : Model -> Buffer -> Model
 updateCurrentBuffer model newBuffer =
-    { model | bufferMap = D.insert model.currentBufferId newBuffer model.bufferMap }
+    { model | bufferMap = D.insert ( model.currentServerName, model.currentChannelName ) newBuffer model.bufferMap }
 
 
 
@@ -245,38 +223,25 @@ serverNameItem name =
 bufferNameItems : Model -> List (Html Msg)
 bufferNameItems model =
     let
-        itemClass serverName channelName =
-            case D.get ( serverName, channelName ) model.bufferIdMap of
-                Just id ->
-                    if id == model.currentBufferId then
-                        "buffer-item buffer-name buffer-selected"
-                    else
-                        "buffer-item buffer-name"
+        itemClass namePair =
+            if namePair == ( model.currentServerName, model.currentChannelName ) then
+                "buffer-item buffer-name buffer-selected"
+            else
+                "buffer-item buffer-name"
 
-                Nothing ->
-                    "buffer-item buffer-name"
-
-        getBufferId serverName channelName =
-            case D.get ( serverName, channelName ) model.bufferIdMap of
-                Just id ->
-                    id
-
-                Nothing ->
-                    -1
-
-        closeAnchor bufferId =
-            a [ class "buffer-close", onClick <| CloseBuffer bufferId ] [ text "✘" ]
+        closeAnchor namePair =
+            a [ class "buffer-close", onClick <| CloseBuffer namePair ] [ text "✘" ]
 
         render =
-            (\( serverName, channelName ) ->
+            (\namePair ->
                 li
-                    [ class (itemClass serverName channelName)
-                    , onClick <| ChangeBuffer (getBufferId serverName channelName)
+                    [ class <| itemClass namePair
+                    , onClick <| ChangeBuffer namePair
                     ]
-                    [ text channelName, closeAnchor (getBufferId serverName channelName) ]
+                    [ text <| second namePair, closeAnchor namePair ]
             )
     in
-        List.map render (D.keys model.bufferIdMap)
+        List.map render (D.keys model.bufferMap)
 
 
 newBufferItem : Model -> Html Msg
