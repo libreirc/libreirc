@@ -1,3 +1,0 @@
-[options]
-module.name_mapper='^.*\.\(elm\|css\|styl\)$' -> 'empty/object'
-suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
