@@ -1,6 +1,5 @@
 Project structure
 ========
-> **NOTE**: This document is not translated into English yet. Please contribute!
 
 [Client side codes](../client/)
 --------
