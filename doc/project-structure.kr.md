@@ -1,5 +1,9 @@
-Project structure
+프로젝트 구조
 ========
+<p align=right>
+  <a href=project-structure.md>English</a> |
+  <strong>한국어</strong>
+</p>
 
 [Client side codes](../client/)
 --------

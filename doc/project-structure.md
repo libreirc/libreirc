@@ -1,5 +1,10 @@
 Project structure
 ========
+<p align=right>
+  <strong>English</strong> |
+  <a href=project-structure.kr.md>한국어</a>
+</p>
+
 > **Disclaimer** : All of the design decisions below are based on the current situation(November 2016).
 
 [Client side codes](../client/)
