@@ -202,15 +202,15 @@ updateCurrentBuffer model newBuffer =
 view : Model -> Html Msg
 view model =
     div [ id "openirc" ]
-        [ buffersDiv model
+        [ bufferListsDiv model
         , currentBufferDiv model
         ]
 
 
-buffersDiv : Model -> Html Msg
-buffersDiv model =
-    div [ id "buffers" ]
-        [ ul [ id "buffer-list" ]
+bufferListsDiv : Model -> Html Msg
+bufferListsDiv model =
+    div [ id "buffer-lists" ]
+        [ ul [ class "buffer-list" ]
             ([ serverNameItem "서버 A" ] ++ bufferNameItems model ++ [ newBufferItem model ])
         ]
 
