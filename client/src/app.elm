@@ -72,9 +72,9 @@ getBuffer model namePair =
             buffer
 
 
-getCurrentNick : Model -> String
-getCurrentNick model =
-    case D.get model.currentServerName model.nickMap of
+getNick : Model -> String -> String
+getNick model serverName =
+    case D.get serverName model.nickMap of
         Nothing ->
             "ERROR"
 
@@ -106,7 +106,7 @@ update msg model =
             getBuffer model currentNamePair
 
         currentNick =
-            getCurrentNick model
+            getNick model model.currentServerName
     in
         case msg of
             SendLine ->
@@ -297,7 +297,7 @@ newLineForm model =
             getBuffer model currentNamePair
 
         currentNick =
-            getCurrentNick model
+            getNick model model.currentServerName
     in
         form [ id "new-line-form", onSubmit SendLine ]
             [ label [ id "new-line-label" ] [ text currentNick ]
