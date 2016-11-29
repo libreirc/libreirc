@@ -39,9 +39,9 @@ type alias Buffer =
 type alias Model =
     { bufferMap : Dict ( String, String ) Buffer
     , nickMap : Dict String String
+    , newChannelNameMap : Dict String String
     , currentServerName : String
     , currentChannelName : String
-    , newChannelName : String
     }
 
 
@@ -57,9 +57,11 @@ model =
         (D.fromList
             [ ( "InitServer", "InitNick" ) ]
         )
+        (D.fromList
+            [ ( "InitServer", "" ) ]
+        )
         "InitServer"
         "#a"
-        ""
 
 
 getBuffer : Model -> ( String, String ) -> Buffer
@@ -127,8 +129,8 @@ update msg model =
                 , Cmd.none
                 )
 
-            TypeNewChannelName serverName msg ->
-                ( { model | newChannelName = msg }
+            TypeNewChannelName serverName newChannelName ->
+                ( { model | newChannelNameMap = D.insert serverName newChannelName model.newChannelNameMap }
                 , Cmd.none
                 )
 
@@ -138,7 +140,12 @@ update msg model =
                         model.currentServerName
 
                     newChannelName =
-                        model.newChannelName
+                        case D.get currentServerName model.newChannelNameMap of
+                            Just newChannelName ->
+                                newChannelName
+
+                            Nothing ->
+                                ""
 
                     newBufferMap =
                         D.insert ( currentServerName, newChannelName ) (Buffer [] "") model.bufferMap
@@ -154,7 +161,7 @@ update msg model =
                     else
                         ( { model
                             | bufferMap = newBufferMap
-                            , newChannelName = ""
+                            , newChannelNameMap = D.insert currentServerName "" model.newChannelNameMap
                           }
                         , Task.perform identity (Task.succeed <| ChangeBuffer ( currentServerName, newChannelName ))
                         )
@@ -249,19 +256,28 @@ bufferNameItems model =
 
 newBufferItem : Model -> Html Msg
 newBufferItem model =
-    li [ class "buffer-item new-buffer" ]
-        [ form [ id "new-buffer-form", onSubmit CreateBuffer ]
-            [ input
-                [ id "new-buffer-text"
-                , placeholder "채널 이름"
-                , autocomplete False
-                , value model.newChannelName
-                , onInput <| TypeNewChannelName model.currentServerName
+    let
+        newChannelName =
+            case D.get model.currentServerName model.newChannelNameMap of
+                Just newChannelName ->
+                    newChannelName
+
+                Nothing ->
+                    ""
+    in
+        li [ class "buffer-item new-buffer" ]
+            [ form [ id "new-buffer-form", onSubmit CreateBuffer ]
+                [ input
+                    [ id "new-buffer-text"
+                    , placeholder "채널 이름"
+                    , autocomplete False
+                    , value newChannelName
+                    , onInput <| TypeNewChannelName model.currentServerName
+                    ]
+                    []
+                , input [ id "new-buffer-submit", type_ "submit", value "Join" ] []
                 ]
-                []
-            , input [ id "new-buffer-submit", type_ "submit", value "Join" ] []
             ]
-        ]
 
 
 currentBufferDiv : Model -> Html Msg
