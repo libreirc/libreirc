@@ -92,7 +92,7 @@ type Msg
     = SendLine
     | TypeNewLine String
     | TypeNewChannelName String String
-    | CreateBuffer
+    | CreateBuffer String
     | ChangeBuffer ( String, String )
     | CloseBuffer ( String, String )
     | Noop
@@ -134,13 +134,10 @@ update msg model =
                 , Cmd.none
                 )
 
-            CreateBuffer ->
+            CreateBuffer serverName ->
                 let
-                    currentServerName =
-                        model.currentServerName
-
                     newChannelName =
-                        case D.get currentServerName model.newChannelNameMap of
+                        case D.get serverName model.newChannelNameMap of
                             Just newChannelName ->
                                 newChannelName
 
@@ -148,10 +145,10 @@ update msg model =
                                 ""
 
                     newBufferMap =
-                        D.insert ( currentServerName, newChannelName ) (Buffer [] "") model.bufferMap
+                        D.insert ( serverName, newChannelName ) (Buffer [] "") model.bufferMap
                 in
                     if
-                        (D.member ( currentServerName, newChannelName ) model.bufferMap
+                        (D.member ( serverName, newChannelName ) model.bufferMap
                             || isEmpty newChannelName
                             || not (startsWith "#" newChannelName)
                         )
@@ -161,9 +158,9 @@ update msg model =
                     else
                         ( { model
                             | bufferMap = newBufferMap
-                            , newChannelNameMap = D.insert currentServerName "" model.newChannelNameMap
+                            , newChannelNameMap = D.insert serverName "" model.newChannelNameMap
                           }
-                        , Task.perform identity (Task.succeed <| ChangeBuffer ( currentServerName, newChannelName ))
+                        , Task.perform identity (Task.succeed <| ChangeBuffer ( serverName, newChannelName ))
                         )
 
             ChangeBuffer ( newServerName, newChannelName ) ->
@@ -266,7 +263,7 @@ newBufferItem model =
                     ""
     in
         li [ class "buffer-item new-buffer" ]
-            [ form [ id "new-buffer-form", onSubmit CreateBuffer ]
+            [ form [ id "new-buffer-form", onSubmit <| CreateBuffer model.currentServerName ]
                 [ input
                     [ id "new-buffer-text"
                     , placeholder "채널 이름"
