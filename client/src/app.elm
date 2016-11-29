@@ -62,9 +62,9 @@ model =
         ""
 
 
-getCurrentBuffer : Model -> Buffer
-getCurrentBuffer model =
-    case D.get ( model.currentServerName, model.currentChannelName ) model.bufferMap of
+getBuffer : Model -> ( String, String ) -> Buffer
+getBuffer model namePair =
+    case D.get namePair model.bufferMap of
         Nothing ->
             Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
@@ -99,8 +99,11 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
+        currentNamePair =
+            ( model.currentServerName, model.currentChannelName )
+
         currentBuffer =
-            getCurrentBuffer model
+            getBuffer model currentNamePair
 
         currentNick =
             getCurrentNick model
@@ -272,8 +275,11 @@ currentBufferDiv model =
 logsList : Model -> Html Msg
 logsList model =
     let
+        currentNamePair =
+            ( model.currentServerName, model.currentChannelName )
+
         currentBuffer =
-            getCurrentBuffer model
+            getBuffer model currentNamePair
     in
         ul [ id "logs" ]
             (currentBuffer.lines
@@ -284,8 +290,11 @@ logsList model =
 newLineForm : Model -> Html Msg
 newLineForm model =
     let
+        currentNamePair =
+            ( model.currentServerName, model.currentChannelName )
+
         currentBuffer =
-            getCurrentBuffer model
+            getBuffer model currentNamePair
 
         currentNick =
             getCurrentNick model
