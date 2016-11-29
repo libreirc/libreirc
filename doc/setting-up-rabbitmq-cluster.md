@@ -1,3 +1,15 @@
+_**NOTE!** 아직 RabbitMQ를 OpenIRC용 메세지 브로커로 써서는 안됩니다! 현재의
+RabbitMQ는 OpenIRC 서비스에 필수적인 보안기능들이 아직 구현되어있지 않습니다._
+
+###### References
+- https://github.com/rabbitmq/rabbitmq-server/issues/505
+- https://github.com/rabbitmq/rabbitmq-mqtt/issues/95
+- https://antoine-galataud.github.io/messaging/rabbitmq/mqtt/stomp/authorization/2015/10/15/rabbit-topic-auth.html
+
+<br>
+
+<br>
+
 Setting up your own RabbitMQ cluster
 ========
 작은 OpenIRC 서버에서는 [mosquitto]나 [mosca]와 같은 메세지브로커를 사용하는것이
