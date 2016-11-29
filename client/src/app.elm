@@ -35,13 +35,15 @@ type alias Buffer =
     , newLine : String
     }
 
+type alias ServerName = String
+type alias ChannelName = String
 
 type alias Model =
-    { bufferMap : Dict ( String, String ) Buffer
-    , nickMap : Dict String String
-    , currentServerName : String
-    , currentChannelName : String
-    , newChannelName : String
+    { bufferMap : Dict ( ServerName, ChannelName ) Buffer
+    , nickMap : Dict ServerName String
+    , currentServerName : ServerName
+    , currentChannelName : ChannelName
+    , newChannelName : ChannelName
     }
 
 
@@ -89,10 +91,10 @@ getCurrentNick model =
 type Msg
     = SendLine
     | TypeNewLine String
-    | TypeNewName String
+    | TypeNewName ChannelName
     | CreateBuffer
-    | ChangeBuffer ( String, String )
-    | CloseBuffer ( String, String )
+    | ChangeBuffer ( ServerName, ChannelName )
+    | CloseBuffer ( ServerName, ChannelName )
     | Noop
 
 
