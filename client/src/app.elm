@@ -89,7 +89,7 @@ getNick model serverName =
 type Msg
     = SendLine
     | TypeNewLine String
-    | TypeNewName String
+    | TypeNewChannelName String String
     | CreateBuffer
     | ChangeBuffer ( String, String )
     | CloseBuffer ( String, String )
@@ -127,7 +127,7 @@ update msg model =
                 , Cmd.none
                 )
 
-            TypeNewName msg ->
+            TypeNewChannelName serverName msg ->
                 ( { model | newChannelName = msg }
                 , Cmd.none
                 )
@@ -256,7 +256,7 @@ newBufferItem model =
                 , placeholder "채널 이름"
                 , autocomplete False
                 , value model.newChannelName
-                , onInput TypeNewName
+                , onInput <| TypeNewChannelName model.currentServerName
                 ]
                 []
             , input [ id "new-buffer-submit", type_ "submit", value "Join" ] []
