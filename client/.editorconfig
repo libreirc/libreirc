@@ -1,0 +1,14 @@
+# EditorConfig is awesome: http://EditorConfig.org
+root = true
+
+[*.{styl, elm}]
+end_of_line = lf
+charset = utf-8
+
+[*.styl]
+indent_style = space
+indent_size = 2
+
+[*.elm]
+indent_style = space
+indent_size = 4
