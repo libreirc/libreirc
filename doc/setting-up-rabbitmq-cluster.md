@@ -109,6 +109,9 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/sc
 - [Install: Generix Unix](https://www.rabbitmq.com/install-generic-unix.html)
 - [Install: Solaris](https://www.rabbitmq.com/install-solaris.html)
 
+###### References
+- https://www.rabbitmq.com/download.html
+
 [rabbitmq-web-mqtt]: https://github.com/rabbitmq/rabbitmq-web-mqtt
 [`rabbitmq-server`]: https://launchpad.net/ubuntu/+source/rabbitmq-server
 [`brew`]: http://brew.sh/
@@ -147,6 +150,7 @@ fs.file-max = 1620401
 
 ###### References
 - [sysctl.conf (5)](http://man7.org/linux/man-pages/man5/sysctl.conf.5.html)
+- https://www.rabbitmq.com/install-generic-unix.html#max-open-files-limit
 
 ### 2. 프로세스의 Open File Limit 늘리기
 대부분의 리눅스 배포판들은 1024를 프로세스의 기본 Open File Limit으로
@@ -185,6 +189,9 @@ END
 
 sudo systemctl restart rabbitmq
 ```
+
+###### References
+- https://www.rabbitmq.com/install-debian.html#linux-max-open-files-limit-options-debian
 
 ### 3. Erlang Cookie 맞추기
 *Erlang Cookie*는 RabbitMQ 클러스터의 노드들이, 서로를 인증하기위해 사용하는
