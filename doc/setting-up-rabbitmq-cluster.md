@@ -1,7 +1,5 @@
 Setting up your own RabbitMQ cluster
 ========
-> **NOTE**: This document is not translated into English yet. Please contribute!
-
 작은 OpenIRC 서버에서는 [mosquitto]나 [mosca]와 같은 메세지브로커를 사용하는것이
 편리하지만, 유저 수가 많아질경우 이 솔루션들은 수평확장이 힘들다. 이때
 RabbitMQ의 클러스터 기능을 쓰면, [SPOF]없이 아주 편리하게 고가용성을 유지한채로
@@ -397,8 +395,20 @@ sudo rabbitmqctl set_policy -p <VHOST> mqtt-ha-policy "^mqtt-subscription-" \
 - https://www.rabbitmq.com/ha.html
 
 ### 4. `rabbitmq-web-mqtt` 플러그인 설치하기
+/usr/lib/rabbitmq/lib/rabbitmq-server-**VERSION**/plugins/ 디렉토리에 플러그인
+바이너리를 설치하면 된다. 예를들어 3.6.5 버전이라면, 아래와 같다.
 
-**TODO: 쓰는중**
+```bash
+# 플러그인 설치
+sudo wget "https://bintray.com/rabbitmq/community-plugins/download_file?file_path=rabbitmq_web_mqtt-3.6.x-14dae543.ez" \
+  -O /usr/lib/rabbitmq/lib/rabbitmq-server-3.6.5/plugins/rabbitmq_web_mqtt-3.6.x-14dae543.ez
+
+# 플러그인 활성화
+sudo rabbitmq-plugins enable rabbitmq_web_mqtt
+```
+
+위와 같이 하면, 웹소켓 기반 MQTT 프로토콜과 TCP기반 MQTT 프로토콜이 동시에
+활성화된다.
 
 ###### References
 - https://github.com/rabbitmq/rabbitmq-web-mqtt
