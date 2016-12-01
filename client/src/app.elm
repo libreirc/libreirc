@@ -36,6 +36,12 @@ type alias Buffer =
     }
 
 
+type alias ServerInfo =
+    { nick : String
+    , newChannelName : ChannelName
+    }
+
+
 type alias ServerName =
     String
 
@@ -46,8 +52,7 @@ type alias ChannelName =
 
 type alias Model =
     { bufferMap : Dict ( ServerName, ChannelName ) Buffer
-    , nickMap : Dict ServerName String
-    , newChannelNameMap : Dict ServerName ChannelName
+    , serverInfoMap : Dict ServerName ServerInfo
     , currentServerName : ServerName
     , currentChannelName : ChannelName
     }
@@ -63,10 +68,7 @@ model =
             ]
         )
         (D.fromList
-            [ ( "InitServer", "InitNick" ) ]
-        )
-        (D.fromList
-            [ ( "InitServer", "" ) ]
+            [ ( "InitServer", ServerInfo "InitNick" "" ) ]
         )
         "InitServer"
         "#a"
@@ -82,14 +84,26 @@ getBuffer model namePair =
             buffer
 
 
+getServerInfo : Model -> ServerName -> ServerInfo
+getServerInfo model serverName =
+    case D.get serverName model.serverInfoMap of
+        Just serverInfo ->
+            serverInfo
+
+        Nothing ->
+            ServerInfo "ERROR" ""
+
+
 getNick : Model -> ServerName -> String
 getNick model serverName =
-    case D.get serverName model.nickMap of
-        Nothing ->
-            "ERROR"
+    getServerInfo model serverName
+        |> (.nick)
 
-        Just nick ->
-            nick
+
+getNewChannelName : Model -> ServerName -> ChannelName
+getNewChannelName model serverName =
+    getServerInfo model serverName
+        |> (.newChannelName)
 
 
 
@@ -138,19 +152,16 @@ update msg model =
                 )
 
             TypeNewChannelName serverName newChannelName ->
-                ( { model | newChannelNameMap = D.insert serverName newChannelName model.newChannelNameMap }
+                ( { model
+                    | serverInfoMap = updateNewChannelName model.serverInfoMap serverName newChannelName
+                  }
                 , Cmd.none
                 )
 
             CreateBuffer serverName ->
                 let
                     newChannelName =
-                        case D.get serverName model.newChannelNameMap of
-                            Just newChannelName ->
-                                newChannelName
-
-                            Nothing ->
-                                ""
+                        getNewChannelName model serverName
 
                     newBufferMap =
                         D.insert ( serverName, newChannelName ) (Buffer [] "") model.bufferMap
@@ -166,7 +177,7 @@ update msg model =
                     else
                         ( { model
                             | bufferMap = newBufferMap
-                            , newChannelNameMap = D.insert serverName "" model.newChannelNameMap
+                            , serverInfoMap = updateNewChannelName model.serverInfoMap serverName ""
                           }
                         , Task.perform identity (Task.succeed <| ChangeBuffer ( serverName, newChannelName ))
                         )
@@ -208,6 +219,23 @@ update msg model =
 updateCurrentBuffer : Model -> Buffer -> Model
 updateCurrentBuffer model newBuffer =
     { model | bufferMap = D.insert ( model.currentServerName, model.currentChannelName ) newBuffer model.bufferMap }
+
+
+updateNewChannelName : Dict ServerName ServerInfo -> ServerName -> ChannelName -> Dict ServerName ServerInfo
+updateNewChannelName serverInfoMap serverName newChannelName =
+    let
+        serverInfo =
+            case D.get serverName serverInfoMap of
+                Just serverInfo ->
+                    serverInfo
+
+                Nothing ->
+                    ServerInfo "ERROR" ""
+
+        updatedServerInfoMap =
+            D.insert serverName { serverInfo | newChannelName = newChannelName } serverInfoMap
+    in
+        updatedServerInfoMap
 
 
 
@@ -263,12 +291,7 @@ newBufferItem : Model -> Html Msg
 newBufferItem model =
     let
         newChannelName =
-            case D.get model.currentServerName model.newChannelNameMap of
-                Just newChannelName ->
-                    newChannelName
-
-                Nothing ->
-                    ""
+            getNewChannelName model model.currentServerName
     in
         li [ class "buffer-item new-buffer" ]
             [ form [ id "new-buffer-form", onSubmit <| CreateBuffer model.currentServerName ]
