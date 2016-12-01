@@ -72,7 +72,7 @@ model =
         "#a"
 
 
-getBuffer : Model -> ( String, String ) -> Buffer
+getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
 getBuffer model namePair =
     case D.get namePair model.bufferMap of
         Nothing ->
@@ -82,7 +82,7 @@ getBuffer model namePair =
             buffer
 
 
-getNick : Model -> String -> String
+getNick : Model -> ServerName -> String
 getNick model serverName =
     case D.get serverName model.nickMap of
         Nothing ->
@@ -230,7 +230,7 @@ bufferListsDiv model =
         ]
 
 
-serverNameItem : String -> Html Msg
+serverNameItem : ServerName -> Html Msg
 serverNameItem name =
     li [ class "buffer-item server-name" ] [ text name ]
 
