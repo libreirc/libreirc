@@ -7,6 +7,18 @@ import Dict as D
 -- Model
 
 
+type alias ServerName =
+    String
+
+
+type alias ChannelName =
+    String
+
+
+type alias NamePair =
+    ( ServerName, ChannelName )
+
+
 type alias Line =
     { nick : String
     , text : String
@@ -25,17 +37,17 @@ type alias ServerInfo =
     }
 
 
-type alias ServerName =
-    String
+type alias BufferMap =
+    Dict NamePair Buffer
 
 
-type alias ChannelName =
-    String
+type alias ServerInfoMap =
+    Dict ServerName ServerInfo
 
 
 type alias Model =
-    { bufferMap : Dict ( ServerName, ChannelName ) Buffer
-    , serverInfoMap : Dict ServerName ServerInfo
+    { bufferMap : BufferMap
+    , serverInfoMap : ServerInfoMap
     , currentServerName : ServerName
     , currentChannelName : ChannelName
     }
