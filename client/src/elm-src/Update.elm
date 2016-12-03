@@ -43,8 +43,10 @@ update msg model =
                         { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
                 in
                     if isEmpty currentBuffer.newLine then
+                        -- If new line is empty, do nothing
                         ( model, Cmd.none )
                     else
+                        -- Otherwise, send a line and scroll the log to the bottom
                         ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmdScrollToBottom )
 
             TypeNewLine typedNewLine ->
@@ -66,11 +68,21 @@ update msg model =
                     newChannelName =
                         getNewChannelName model serverName
 
+                    -- If any of conditions below is satisfied, it's not a valid name for a buffer
                     isValidBufferName =
+                        not <|
+                            -- Already exists
+                            D.member ( serverName, newChannelName ) model.bufferMap
+                                || -- Empty new channel name
+                                   isEmpty newChannelName
+                                || -- Violate channel name convention
+                                   not (startsWith "#" newChannelName)
+
                     -- Buffer map with the newly created buffer
                     updatedBufferMap =
                         updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer [] "")
 
+                    -- ServerInfo map with empty newChannelName for the server
                     updatedServerInfoMap =
                         updateNewChannelName model.serverInfoMap serverName ""
                 in
@@ -79,7 +91,7 @@ update msg model =
                         , Task.perform identity (Task.succeed <| ChangeBuffer ( serverName, newChannelName ))
                         )
                     else
-                        {- Error notification logic should be added -}
+                        -- Error notification logic should be added
                         ( model, Cmd.none )
 
             ChangeBuffer ( newServerName, newChannelName ) ->
@@ -94,8 +106,10 @@ update msg model =
                             |> D.filter (\namePair _ -> namePair /= closingNamePair)
 
                     ( nextServerName, nextChannelName ) =
+                        -- If currently selected buffer is not closed, keep the buffer selected
                         if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
                             ( model.currentServerName, model.currentChannelName )
+                            -- Otherwise, just choose the first buffer from remainingBufferMap
                         else
                             case List.head <| D.keys remainingBufferMap of
                                 Just namePair ->
