@@ -139,12 +139,12 @@ cmdScrollToBottom =
     Task.attempt (\_ -> Noop) <| toBottom "logs"
 
 
-updateBufferMap : Dict ( ServerName, ChannelName ) Buffer -> ( ServerName, ChannelName ) -> Buffer -> Dict ( ServerName, ChannelName ) Buffer
+updateBufferMap : BufferMap -> ( ServerName, ChannelName ) -> Buffer -> BufferMap
 updateBufferMap bufferMap namePair newBuffer =
     D.insert namePair newBuffer bufferMap
 
 
-updateNewChannelName : Dict ServerName ServerInfo -> ServerName -> ChannelName -> Dict ServerName ServerInfo
+updateNewChannelName : ServerInfoMap -> ServerName -> ChannelName -> ServerInfoMap
 updateNewChannelName serverInfoMap serverName newChannelName =
     let
         serverInfo =
