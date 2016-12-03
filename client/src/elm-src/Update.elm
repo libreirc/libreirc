@@ -45,14 +45,14 @@ update msg model =
                     if isEmpty currentBuffer.newLine then
                         ( model, Cmd.none )
                     else
-                        ( updateBuffer model currentNamePair newBuffer, Task.attempt (\_ -> Noop) <| toBottom "logs" )
+                        ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmdScrollToBottom )
 
             TypeNewLine typedNewLine ->
                 let
                     newBuffer =
                         { currentBuffer | newLine = typedNewLine }
                 in
-                    ( updateBuffer model currentNamePair newBuffer, Cmd.none )
+                    ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
 
             TypeNewChannelName serverName newChannelName ->
                 ( { model
@@ -67,14 +67,9 @@ update msg model =
                         getNewChannelName model serverName
 
                     isValidBufferName =
-                        not
-                            (D.member ( serverName, newChannelName ) model.bufferMap
-                                || isEmpty newChannelName
-                                || not (startsWith "#" newChannelName)
-                            )
-
-                    newBufferMap =
-                        D.insert ( serverName, newChannelName ) (Buffer [] "") model.bufferMap
+                    -- Buffer map with the newly created buffer
+                    updatedBufferMap =
+                        updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer [] "")
 
                     updatedServerInfoMap =
                         updateNewChannelName model.serverInfoMap serverName ""
@@ -109,21 +104,14 @@ update msg model =
                                 Nothing ->
                                     ( "InitServer", "ERROR" )
                 in
-                    ( { model
-                        | bufferMap = remainingBufferMap
-                        , currentServerName = nextServerName
-                        , currentChannelName = nextChannelName
-                      }
-                    , Task.perform identity <| Task.succeed <| ChangeBuffer ( nextServerName, nextChannelName )
-                    )
 
             Noop ->
                 ( model, Cmd.none )
 
 
-updateBuffer : Model -> ( ServerName, ChannelName ) -> Buffer -> Model
-updateBuffer model namePair newBuffer =
-    { model | bufferMap = D.insert namePair newBuffer model.bufferMap }
+updateBufferMap : Dict ( ServerName, ChannelName ) Buffer -> ( ServerName, ChannelName ) -> Buffer -> Dict ( ServerName, ChannelName ) Buffer
+updateBufferMap bufferMap namePair newBuffer =
+    D.insert namePair newBuffer bufferMap
 
 
 updateNewChannelName : Dict ServerName ServerInfo -> ServerName -> ChannelName -> Dict ServerName ServerInfo
