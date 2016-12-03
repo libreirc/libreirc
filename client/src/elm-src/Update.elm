@@ -85,11 +85,12 @@ update msg model =
                     -- ServerInfo map with empty newChannelName for the server
                     updatedServerInfoMap =
                         updateNewChannelName model.serverInfoMap serverName ""
+
+                    updatedModel =
+                        { model | bufferMap = updatedBufferMap, serverInfoMap = updatedServerInfoMap }
                 in
                     if isValidBufferName then
-                        ( { model | bufferMap = newBufferMap, serverInfoMap = updatedServerInfoMap }
-                        , Task.perform identity (Task.succeed <| ChangeBuffer ( serverName, newChannelName ))
-                        )
+                        update (ChangeBuffer ( serverName, newChannelName )) updatedModel
                     else
                         -- Error notification logic should be added
                         ( model, Cmd.none )
@@ -117,7 +118,15 @@ update msg model =
 
                                 Nothing ->
                                     ( "InitServer", "ERROR" )
+
+                    updatedModel =
+                        { model
+                            | bufferMap = remainingBufferMap
+                            , currentServerName = nextServerName
+                            , currentChannelName = nextChannelName
+                        }
                 in
+                    update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
 
             Noop ->
                 ( model, Cmd.none )
