@@ -99,8 +99,19 @@ newBufferItem model =
 currentBufferDiv : Model -> Html Msg
 currentBufferDiv model =
     div [ id "current-buffer" ]
-        [ logsList model
+        [ currentBufferInfoDiv model
+        , logsList model
         , newLineForm model
+        ]
+
+
+{-|
+    currentBufferInfoDiv model
+-}
+currentBufferInfoDiv : Model -> Html Msg
+currentBufferInfoDiv model =
+    div [ id "current-buffer-info" ]
+        [ text model.currentChannelName
         ]
 
 
