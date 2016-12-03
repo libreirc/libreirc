@@ -84,7 +84,7 @@ update msg model =
 
             ChangeBuffer ( newServerName, newChannelName ) ->
                 ( { model | currentServerName = newServerName, currentChannelName = newChannelName }
-                , Task.attempt (\_ -> Noop) (toBottom "logs")
+                , cmdScrollToBottom
                 )
 
             CloseBuffer closingNamePair ->
@@ -107,6 +107,13 @@ update msg model =
 
             Noop ->
                 ( model, Cmd.none )
+
+
+{-| Cmd which scrolls the DOM node to the bottom
+-}
+cmdScrollToBottom : Cmd Msg
+cmdScrollToBottom =
+    Task.attempt (\_ -> Noop) <| toBottom "logs"
 
 
 updateBufferMap : Dict ( ServerName, ChannelName ) Buffer -> ( ServerName, ChannelName ) -> Buffer -> Dict ( ServerName, ChannelName ) Buffer
