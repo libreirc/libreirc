@@ -54,16 +54,21 @@ bufferNameItems model =
             else
                 "buffer-item buffer-name"
 
+        bufferNameSpan namePair =
+            span
+                [ onClick <| ChangeBuffer namePair ]
+                [ text <| second namePair ]
+
         closeAnchor namePair =
             a [ class "buffer-close", onClick <| CloseBuffer namePair ] [ text "✘" ]
 
         render =
             (\namePair ->
                 li
-                    [ class <| itemClass namePair
-                    , onClick <| ChangeBuffer namePair
+                    [ class <| itemClass namePair ]
+                    [ bufferNameSpan namePair
+                    , closeAnchor namePair
                     ]
-                    [ text <| second namePair, closeAnchor namePair ]
             )
     in
         List.map render (D.keys model.bufferMap)
@@ -111,7 +116,7 @@ currentBufferDiv model =
 currentBufferInfoDiv : Model -> Html Msg
 currentBufferInfoDiv model =
     div [ id "current-buffer-info" ]
-        [ text model.currentChannelName
+        [ text <| model.currentServerName ++ model.currentChannelName
         ]
 
 
