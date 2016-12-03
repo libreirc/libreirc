@@ -106,13 +106,16 @@ update msg model =
                         model.bufferMap
                             |> D.filter (\namePair _ -> namePair /= closingNamePair)
 
+                    remainingNamePairs =
+                        D.keys remainingBufferMap
+
                     ( nextServerName, nextChannelName ) =
                         -- If currently selected buffer is not closed, keep the buffer selected
                         if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
                             ( model.currentServerName, model.currentChannelName )
-                            -- Otherwise, just choose the first buffer from remainingBufferMap
                         else
-                            case List.head <| D.keys remainingBufferMap of
+                            -- Otherwise, just choose the first buffer from remainingBufferMap
+                            case List.head <| remainingNamePairs of
                                 Just namePair ->
                                     namePair
 
@@ -120,11 +123,7 @@ update msg model =
                                     ( "InitServer", "ERROR" )
 
                     updatedModel =
-                        { model
-                            | bufferMap = remainingBufferMap
-                            , currentServerName = nextServerName
-                            , currentChannelName = nextChannelName
-                        }
+                        { model | bufferMap = remainingBufferMap }
                 in
                     update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
 
