@@ -20,6 +20,10 @@ view model =
         ]
 
 
+{-|
+    bufferListsDiv : <div> containing the lists of buffers, indexed by server (sidebar)
+    TODO: Support multi-server architecture - multiple <ul> can exist
+-}
 bufferListsDiv : Model -> Html Msg
 bufferListsDiv model =
     div [ id "buffer-lists" ]
@@ -28,11 +32,19 @@ bufferListsDiv model =
         ]
 
 
+{-|
+    serverNameItem : <li> showing server name.
+    TODO: Make server to be shown when clicked
+-}
 serverNameItem : ServerName -> Html Msg
 serverNameItem name =
     li [ class "buffer-item server-name" ] [ text name ]
 
 
+{-|
+    bufferNameItems : [ <li> showing buffer (channel) name ]
+    TODO: Add server name to arguement, filter namePairs which does not belong to the server
+-}
 bufferNameItems : Model -> List (Html Msg)
 bufferNameItems model =
     let
@@ -57,6 +69,9 @@ bufferNameItems model =
         List.map render (D.keys model.bufferMap)
 
 
+{-|
+    newBufferItem : <li> for new buffer join
+-}
 newBufferItem : Model -> Html Msg
 newBufferItem model =
     let
@@ -78,6 +93,9 @@ newBufferItem model =
             ]
 
 
+{-|
+    currentBufferDiv : <div> containing currently selected buffer, including logs and new line form
+-}
 currentBufferDiv : Model -> Html Msg
 currentBufferDiv model =
     div [ id "current-buffer" ]
@@ -86,6 +104,9 @@ currentBufferDiv model =
         ]
 
 
+{-|
+    logsList : <ul> showing current buffer's logs
+-}
 logsList : Model -> Html Msg
 logsList model =
     let
@@ -101,6 +122,9 @@ logsList model =
             )
 
 
+{-|
+    newLineForm : <form> for typing new line for current buffer
+-}
 newLineForm : Model -> Html Msg
 newLineForm model =
     let
