@@ -1,5 +1,5 @@
-import Elm from './app.elm'
+import Elm from './App.elm'
 import 'normalize.css/normalize.css'
-import './app.styl'
+import './main.styl'
 
 Elm.App.fullscreen();
