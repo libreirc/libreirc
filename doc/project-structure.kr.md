@@ -27,9 +27,9 @@
 ```
 
 [elm]은 2016년 11월 기준, SPA 어플리케이션 개발에 쓸 수 있는 프레임워크중 가장
-성능이 우수하며, 강타입시스템을 장착하고있기때문에 디버깅에 쓸 맨아워(![문명 5의
-"production" 아이콘](img/production.png))가 많지 않은 소규모 팀의 빠른 개발에
-적합합니다.
+성능이 우수하며, 강타입시스템을 장착하고있기때문에 디버깅에 쓸
+[person-hour]\(![문명 5의 "production" 아이콘](img/production.png))가 많지 않은
+소규모 팀의 빠른 개발에 적합합니다.
 
 [yarn]은 거의 모든면에서 [npm]보다 우수한 패키지매니저입니다. 무엇보다, [락파일]
 개념을 지원하기때문에, 다른 라이브러리 제작자의 실수로 OpenIRC 빌드가 깨져서
@@ -49,6 +49,7 @@
 있습니다.
 
 [elm]: http://elm-lang.org/
+[person-hour]: https://en.wikipedia.org/wiki/Person-hour
 [yarn]: https://yarnpkg.com/
 [웹팩]: https://webpack.github.io/
 [stylus]: http://stylus-lang.com/
