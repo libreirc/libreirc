@@ -12,7 +12,7 @@ exec <<EOF
 python3 -m venv .venv &&
 
 # Activate venv
-source .venv/bin/activate &&
+. .venv/bin/activate &&
 
 # Upgrade pip
 pip install --upgrade pip &&

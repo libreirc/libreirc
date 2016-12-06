@@ -9,7 +9,7 @@ chdir dirname(__FILE__);
 exec <<EOF
 
 # Activate venv
-source .venv/bin/activate &&
+. .venv/bin/activate &&
 
 # Start server
 python src/main.py
