@@ -401,7 +401,7 @@ sudo rabbitmqctl set_policy -p <VHOST> mqtt-ha-policy "^mqtt-subscription-" \
 
 위처럼 CLI로 정책을 추가해줘도 되고, 아래와 같이 관리자콘솔에서도 해줄 수 있다.
 
-![Management Console Screenshot](img/ha-policy.png)
+![Management Console Screenshot](https://openirc.github.io/img/ha-policy.png)
 
 ###### References
 - https://www.rabbitmq.com/ha.html

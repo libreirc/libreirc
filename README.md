@@ -2,7 +2,7 @@ OpenIRC
 ========
 > :heartbeat: IRC Client for everyone!
 
-![Preview Screenshot](doc/img/preview.png)
+![Preview Screenshot](https://openirc.github.io/img/preview.png)
 
 Making open source alternative of [IRCCloud] is this project's very first goal.
 Join our IRC channel if you're interested!
