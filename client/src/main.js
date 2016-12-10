@@ -1,5 +1,7 @@
-import Elm from './App.elm'
-import 'normalize.css/normalize.css'
-import './main.styl'
+// Non-js dependencies
+require('normalize.css/normalize.css');
+require('./main.styl');
+
+const Elm = require('./App.elm');
 
 Elm.App.fullscreen();

@@ -29,12 +29,6 @@ module.exports = {
       { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css') },
       { test: /\.styl$/, loader: ExtractTextPlugin.extract('style', 'css!postcss!stylus') },
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel',
-        query: { presets: ['latest'] }
-      },
-      {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         loader: 'elm-webpack'
