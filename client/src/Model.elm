@@ -69,11 +69,16 @@ model =
         "#a"
 
 
+errorBuffer : Buffer
+errorBuffer =
+    Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
+
+
 getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
 getBuffer model namePair =
     case D.get namePair model.bufferMap of
         Nothing ->
-            Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
+            errorBuffer
 
         Just buffer ->
             buffer
