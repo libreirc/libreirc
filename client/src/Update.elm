@@ -152,7 +152,7 @@ updateNewChannelName serverInfoMap serverName newChannelName =
                     serverInfo
 
                 Nothing ->
-                    ServerInfo "ERROR" ""
+                    ServerInfo "ERROR" "" errorBuffer
 
         updatedServerInfoMap =
             D.insert serverName { serverInfo | newChannelName = newChannelName } serverInfoMap

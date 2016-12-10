@@ -34,6 +34,7 @@ type alias Buffer =
 type alias ServerInfo =
     { nick : String
     , newChannelName : ChannelName
+    , serverBuffer : Buffer
     }
 
 
@@ -63,7 +64,7 @@ model =
             ]
         )
         (D.fromList
-            [ ( "InitServer", ServerInfo "InitNick" "" ) ]
+            [ ( "InitServer", ServerInfo "InitNick" "" errorBuffer ) ]
         )
         "InitServer"
         "#a"
@@ -91,7 +92,7 @@ getServerInfo model serverName =
             serverInfo
 
         Nothing ->
-            ServerInfo "ERROR" ""
+            ServerInfo "ERROR" "" errorBuffer
 
 
 getNick : Model -> ServerName -> String
@@ -104,3 +105,9 @@ getNewChannelName : Model -> ServerName -> ChannelName
 getNewChannelName model serverName =
     getServerInfo model serverName
         |> (.newChannelName)
+
+
+getServerBuffer : Model -> ServerName -> Buffer
+getServerBuffer model serverName =
+    getServerInfo model serverName
+        |> (.serverBuffer)
