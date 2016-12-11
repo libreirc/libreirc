@@ -35,29 +35,46 @@ update msg model =
     in
         case msg of
             SendLine ->
-                let
-                    newLog =
-                        Line currentNick currentBuffer.newLine
+                if isServerBuffer currentNamePair then
+                    -- Any SendLine to a server buffer is ignored for now.
+                    let
+                        errorLog =
+                            Line "ERROR" "You cannot send a line to the server Buffer."
 
-                    newBuffer =
-                        { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
-                in
-                    if isEmpty currentBuffer.newLine then
-                        -- If new line is empty, do nothing
-                        ( model, Cmd.none )
-                    else
-                        -- Otherwise, send a line and scroll the log to the bottom
+                        newBuffer =
+                            { currentBuffer
+                                | newLine = ""
+                                , lines = currentBuffer.lines ++ [ errorLog ]
+                            }
+                    in
+                        ( { model | serverInfoMap = updateServerBuffer model.serverInfoMap model.currentServerName newBuffer }
+                        , Cmd.none
+                        )
+                else if isEmpty currentBuffer.newLine then
+                    -- If new line is empty, do nothing
+                    ( model, Cmd.none )
+                else
+                    -- Otherwise, send a line and scroll the log to the bottom
+                    let
+                        newLog =
+                            Line currentNick currentBuffer.newLine
+
+                        newBuffer =
+                            { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
+                    in
                         ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmdScrollToBottom )
 
             TypeNewLine typedNewLine ->
                 let
                     newBuffer =
-                        if isServerBuffer currentNamePair then
-                            { currentBuffer | newLine = "You cannot type to a server Buffer." }
-                        else
-                            { currentBuffer | newLine = typedNewLine }
+                        { currentBuffer | newLine = typedNewLine }
                 in
-                    ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
+                    if isServerBuffer currentNamePair then
+                        ( { model | serverInfoMap = updateServerBuffer model.serverInfoMap model.currentServerName newBuffer }
+                        , Cmd.none
+                        )
+                    else
+                        ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
 
             TypeNewChannelName serverName newChannelName ->
                 ( { model
