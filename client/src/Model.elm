@@ -69,7 +69,7 @@ model =
             ]
         )
         (D.fromList
-            [ ( "InitServer", ServerInfo "InitNick" "" errorBuffer ) ]
+            [ ( "InitServer", ServerInfo "InitNick" "" <| initialServerBuffer "InitServer" ) ]
         )
         "InitServer"
         "#a"
@@ -80,11 +80,13 @@ errorBuffer =
     Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
 
-getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
-getBuffer model namePair =
-    case D.get namePair model.bufferMap of
-        Nothing ->
-            errorBuffer
+initialServerBuffer : ServerName -> Buffer
+initialServerBuffer serverName =
+    let
+        welcomeMsg =
+            "WELCOME TO " ++ serverName ++ " SERVER."
+    in
+        Buffer [ Line "WELCOME" welcomeMsg ] ""
 
 
 getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
