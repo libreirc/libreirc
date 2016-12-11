@@ -71,16 +71,6 @@ update msg model =
                     newChannelName =
                         getNewChannelName model serverName
 
-                    -- If any of conditions below is satisfied, it's not a valid name for a buffer
-                    isValidBufferName =
-                        not <|
-                            -- Already exists
-                            D.member ( serverName, newChannelName ) model.bufferMap
-                                || -- Empty new channel name
-                                   isEmpty newChannelName
-                                || -- Violate channel name convention
-                                   not (startsWith "#" newChannelName)
-
                     -- Buffer map with the newly created buffer
                     updatedBufferMap =
                         updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer [] "")
@@ -92,7 +82,7 @@ update msg model =
                     updatedModel =
                         { model | bufferMap = updatedBufferMap, serverInfoMap = updatedServerInfoMap }
                 in
-                    if isValidBufferName then
+                    if isValidNewBuffer model ( serverName, newChannelName ) then
                         update (ChangeBuffer ( serverName, newChannelName )) updatedModel
                     else
                         -- Error notification logic should be added
@@ -170,3 +160,14 @@ updateNewChannelName serverInfoMap serverName newChannelName =
 isServerBuffer : ( ServerName, ChannelName ) -> Bool
 isServerBuffer ( _, channelName ) =
     channelName == serverBufferKey
+
+
+isValidNewBuffer : Model -> ( ServerName, ChannelName ) -> Bool
+isValidNewBuffer model ( serverName, newChannelName ) =
+    not <|
+        -- Already exists
+        D.member ( serverName, newChannelName ) model.bufferMap
+            || -- Empty new channel name
+               isEmpty newChannelName
+            || -- Violate channel name convention
+               not (startsWith "#" newChannelName)
