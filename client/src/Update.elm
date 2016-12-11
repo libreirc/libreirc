@@ -35,18 +35,33 @@ update msg model =
     in
         case msg of
             SendLine ->
-                let
-                    newLog =
-                        Line currentNick currentBuffer.newLine
+                if isServerBuffer currentNamePair then
+                    -- Any SendLine to a server buffer is ignored for now.
+                    let
+                        errorLog =
+                            Line "ERROR" "You cannot send a line to the server Buffer."
 
-                    newBuffer =
-                        { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
-                in
-                    if isEmpty currentBuffer.newLine then
-                        -- If new line is empty, do nothing
-                        ( model, Cmd.none )
-                    else
-                        -- Otherwise, send a line and scroll the log to the bottom
+                        newBuffer =
+                            { currentBuffer
+                                | newLine = ""
+                                , lines = currentBuffer.lines ++ [ errorLog ]
+                            }
+                    in
+                        ( { model | serverInfoMap = updateServerBuffer model.serverInfoMap model.currentServerName newBuffer }
+                        , Cmd.none
+                        )
+                else if isEmpty currentBuffer.newLine then
+                    -- If new line is empty, do nothing
+                    ( model, Cmd.none )
+                else
+                    -- Otherwise, send a line and scroll the log to the bottom
+                    let
+                        newLog =
+                            Line currentNick currentBuffer.newLine
+
+                        newBuffer =
+                            { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
+                    in
                         ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmdScrollToBottom )
 
             TypeNewLine typedNewLine ->
@@ -54,7 +69,12 @@ update msg model =
                     newBuffer =
                         { currentBuffer | newLine = typedNewLine }
                 in
-                    ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
+                    if isServerBuffer currentNamePair then
+                        ( { model | serverInfoMap = updateServerBuffer model.serverInfoMap model.currentServerName newBuffer }
+                        , Cmd.none
+                        )
+                    else
+                        ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
 
             TypeNewChannelName serverName newChannelName ->
                 ( { model
@@ -68,16 +88,6 @@ update msg model =
                     newChannelName =
                         getNewChannelName model serverName
 
-                    -- If any of conditions below is satisfied, it's not a valid name for a buffer
-                    isValidBufferName =
-                        not <|
-                            -- Already exists
-                            D.member ( serverName, newChannelName ) model.bufferMap
-                                || -- Empty new channel name
-                                   isEmpty newChannelName
-                                || -- Violate channel name convention
-                                   not (startsWith "#" newChannelName)
-
                     -- Buffer map with the newly created buffer
                     updatedBufferMap =
                         updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer [] "")
@@ -89,7 +99,7 @@ update msg model =
                     updatedModel =
                         { model | bufferMap = updatedBufferMap, serverInfoMap = updatedServerInfoMap }
                 in
-                    if isValidBufferName then
+                    if isValidNewBuffer model ( serverName, newChannelName ) then
                         update (ChangeBuffer ( serverName, newChannelName )) updatedModel
                     else
                         -- Error notification logic should be added
@@ -101,31 +111,35 @@ update msg model =
                 )
 
             CloseBuffer closingNamePair ->
-                let
-                    remainingBufferMap =
-                        model.bufferMap
-                            |> D.filter (\namePair _ -> namePair /= closingNamePair)
+                if isServerBuffer closingNamePair then
+                    ( model, Cmd.none )
+                    -- User cannot delete the server buffer (for now)
+                else
+                    let
+                        remainingBufferMap =
+                            model.bufferMap
+                                |> D.filter (\namePair _ -> namePair /= closingNamePair)
 
-                    remainingNamePairs =
-                        D.keys remainingBufferMap
+                        remainingNamePairs =
+                            D.keys remainingBufferMap
 
-                    ( nextServerName, nextChannelName ) =
-                        -- If currently selected buffer is not closed, keep the buffer selected
-                        if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
-                            ( model.currentServerName, model.currentChannelName )
-                        else
-                            -- Otherwise, just choose the first buffer from remainingBufferMap
-                            case List.head <| remainingNamePairs of
-                                Just namePair ->
-                                    namePair
+                        ( nextServerName, nextChannelName ) =
+                            -- If currently selected buffer is not closed, keep the buffer selected
+                            if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
+                                ( model.currentServerName, model.currentChannelName )
+                            else
+                                -- Otherwise, just choose the first buffer from remainingBufferMap
+                                case List.head <| remainingNamePairs of
+                                    Just namePair ->
+                                        namePair
 
-                                Nothing ->
-                                    ( "InitServer", "ERROR" )
+                                    Nothing ->
+                                        ( "InitServer", "ERROR" )
 
-                    updatedModel =
-                        { model | bufferMap = remainingBufferMap }
-                in
-                    update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
+                        updatedModel =
+                            { model | bufferMap = remainingBufferMap }
+                    in
+                        update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
 
             Noop ->
                 ( model, Cmd.none )
@@ -152,9 +166,42 @@ updateNewChannelName serverInfoMap serverName newChannelName =
                     serverInfo
 
                 Nothing ->
-                    ServerInfo "ERROR" ""
+                    ServerInfo "ERROR" "" errorBuffer
 
         updatedServerInfoMap =
             D.insert serverName { serverInfo | newChannelName = newChannelName } serverInfoMap
     in
         updatedServerInfoMap
+
+
+updateServerBuffer : ServerInfoMap -> ServerName -> Buffer -> ServerInfoMap
+updateServerBuffer serverInfoMap serverName newServerBuffer =
+    let
+        serverInfo =
+            case D.get serverName serverInfoMap of
+                Just serverInfo ->
+                    serverInfo
+
+                Nothing ->
+                    ServerInfo "ERROR" "" errorBuffer
+
+        updatedServerInfoMap =
+            D.insert serverName { serverInfo | serverBuffer = newServerBuffer } serverInfoMap
+    in
+        updatedServerInfoMap
+
+
+isServerBuffer : ( ServerName, ChannelName ) -> Bool
+isServerBuffer ( _, channelName ) =
+    channelName == serverBufferKey
+
+
+isValidNewBuffer : Model -> ( ServerName, ChannelName ) -> Bool
+isValidNewBuffer model ( serverName, newChannelName ) =
+    not <|
+        -- Already exists
+        D.member ( serverName, newChannelName ) model.bufferMap
+            || -- Empty new channel name
+               isEmpty newChannelName
+            || -- Violate channel name convention
+               not (startsWith "#" newChannelName)

@@ -34,6 +34,7 @@ type alias Buffer =
 type alias ServerInfo =
     { nick : String
     , newChannelName : ChannelName
+    , serverBuffer : Buffer
     }
 
 
@@ -53,6 +54,11 @@ type alias Model =
     }
 
 
+serverBufferKey : ChannelName
+serverBufferKey =
+    "Server Buffer"
+
+
 model : Model
 model =
     Model
@@ -63,20 +69,37 @@ model =
             ]
         )
         (D.fromList
-            [ ( "InitServer", ServerInfo "InitNick" "" ) ]
+            [ ( "InitServer", ServerInfo "InitNick" "" <| initialServerBuffer "InitServer" ) ]
         )
         "InitServer"
         "#a"
 
 
-getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
-getBuffer model namePair =
-    case D.get namePair model.bufferMap of
-        Nothing ->
-            Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
+errorBuffer : Buffer
+errorBuffer =
+    Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
-        Just buffer ->
-            buffer
+
+initialServerBuffer : ServerName -> Buffer
+initialServerBuffer serverName =
+    let
+        welcomeMsg =
+            "WELCOME TO " ++ serverName ++ " SERVER."
+    in
+        Buffer [ Line "WELCOME" welcomeMsg ] ""
+
+
+getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
+getBuffer model ( serverName, channelName ) =
+    if channelName == serverBufferKey then
+        getServerBuffer model serverName
+    else
+        case D.get ( serverName, channelName ) model.bufferMap of
+            Nothing ->
+                errorBuffer
+
+            Just buffer ->
+                buffer
 
 
 getServerInfo : Model -> ServerName -> ServerInfo
@@ -86,7 +109,7 @@ getServerInfo model serverName =
             serverInfo
 
         Nothing ->
-            ServerInfo "ERROR" ""
+            ServerInfo "ERROR" "" errorBuffer
 
 
 getNick : Model -> ServerName -> String
@@ -99,3 +122,9 @@ getNewChannelName : Model -> ServerName -> ChannelName
 getNewChannelName model serverName =
     getServerInfo model serverName
         |> (.newChannelName)
+
+
+getServerBuffer : Model -> ServerName -> Buffer
+getServerBuffer model serverName =
+    getServerInfo model serverName
+        |> (.serverBuffer)
