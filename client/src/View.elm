@@ -28,7 +28,7 @@ bufferListsDiv : Model -> Html Msg
 bufferListsDiv model =
     div [ id "buffer-lists" ]
         [ ul [ class "buffer-list" ]
-            ([ serverNameItem "서버 A" ] ++ bufferNameItems model ++ [ newBufferItem model ])
+            ([ serverNameItem "InitServer" ] ++ bufferNameItems model ++ [ newBufferItem model ])
         ]
 
 
@@ -38,7 +38,13 @@ bufferListsDiv model =
 -}
 serverNameItem : ServerName -> Html Msg
 serverNameItem name =
-    li [ class "buffer-item server-name" ] [ text name ]
+    let
+        serverNameSpan serverName =
+            span
+                [ onClick <| ChangeBuffer ( serverName, serverBufferKey ) ]
+                [ text serverName ]
+    in
+        li [ class "buffer-item server-name" ] [ serverNameSpan name ]
 
 
 {-|
