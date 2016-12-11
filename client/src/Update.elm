@@ -52,7 +52,10 @@ update msg model =
             TypeNewLine typedNewLine ->
                 let
                     newBuffer =
-                        { currentBuffer | newLine = typedNewLine }
+                        if isServerBuffer currentNamePair then
+                            { currentBuffer | newLine = "You cannot type to a server Buffer." }
+                        else
+                            { currentBuffer | newLine = typedNewLine }
                 in
                     ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, Cmd.none )
 
@@ -101,31 +104,35 @@ update msg model =
                 )
 
             CloseBuffer closingNamePair ->
-                let
-                    remainingBufferMap =
-                        model.bufferMap
-                            |> D.filter (\namePair _ -> namePair /= closingNamePair)
+                if isServerBuffer closingNamePair then
+                    ( model, Cmd.none )
+                    -- User cannot delete the server buffer (for now)
+                else
+                    let
+                        remainingBufferMap =
+                            model.bufferMap
+                                |> D.filter (\namePair _ -> namePair /= closingNamePair)
 
-                    remainingNamePairs =
-                        D.keys remainingBufferMap
+                        remainingNamePairs =
+                            D.keys remainingBufferMap
 
-                    ( nextServerName, nextChannelName ) =
-                        -- If currently selected buffer is not closed, keep the buffer selected
-                        if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
-                            ( model.currentServerName, model.currentChannelName )
-                        else
-                            -- Otherwise, just choose the first buffer from remainingBufferMap
-                            case List.head <| remainingNamePairs of
-                                Just namePair ->
-                                    namePair
+                        ( nextServerName, nextChannelName ) =
+                            -- If currently selected buffer is not closed, keep the buffer selected
+                            if ( model.currentServerName, model.currentChannelName ) /= closingNamePair then
+                                ( model.currentServerName, model.currentChannelName )
+                            else
+                                -- Otherwise, just choose the first buffer from remainingBufferMap
+                                case List.head <| remainingNamePairs of
+                                    Just namePair ->
+                                        namePair
 
-                                Nothing ->
-                                    ( "InitServer", "ERROR" )
+                                    Nothing ->
+                                        ( "InitServer", "ERROR" )
 
-                    updatedModel =
-                        { model | bufferMap = remainingBufferMap }
-                in
-                    update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
+                        updatedModel =
+                            { model | bufferMap = remainingBufferMap }
+                    in
+                        update (ChangeBuffer ( nextServerName, nextChannelName )) updatedModel
 
             Noop ->
                 ( model, Cmd.none )
@@ -158,3 +165,8 @@ updateNewChannelName serverInfoMap serverName newChannelName =
             D.insert serverName { serverInfo | newChannelName = newChannelName } serverInfoMap
     in
         updatedServerInfoMap
+
+
+isServerBuffer : ( ServerName, ChannelName ) -> Bool
+isServerBuffer ( _, channelName ) =
+    channelName == serverBufferKey
