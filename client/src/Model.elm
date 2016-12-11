@@ -54,6 +54,11 @@ type alias Model =
     }
 
 
+serverBufferKey : ChannelName
+serverBufferKey =
+    "SERVER_BUFFER_KEY"
+
+
 model : Model
 model =
     Model
@@ -81,8 +86,18 @@ getBuffer model namePair =
         Nothing ->
             errorBuffer
 
-        Just buffer ->
-            buffer
+
+getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
+getBuffer model ( serverName, channelName ) =
+    if channelName == serverBufferKey then
+        getServerBuffer model serverName
+    else
+        case D.get ( serverName, channelName ) model.bufferMap of
+            Nothing ->
+                errorBuffer
+
+            Just buffer ->
+                buffer
 
 
 getServerInfo : Model -> ServerName -> ServerInfo
