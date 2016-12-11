@@ -13,7 +13,8 @@ Join our IRC channel if you're interested!
 If you are interested in contributing to the OpenIRC project, take a look at our
 development documentation!
 
-- **[Project structure](doc/project-structure.md)**
+- **[Why OpenIRC?](doc/why-openirc.md)**
+- [Project structure](doc/project-structure.md)
 - [Setting up your own RabbitMQ cluster](doc/setting-up-rabbitmq-cluster.md)
 
 --------
