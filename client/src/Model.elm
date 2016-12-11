@@ -56,7 +56,7 @@ type alias Model =
 
 serverBufferKey : ChannelName
 serverBufferKey =
-    "SERVER_BUFFER_KEY"
+    "Server Buffer"
 
 
 model : Model

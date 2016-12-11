@@ -121,9 +121,12 @@ currentBufferDiv model =
 -}
 currentBufferInfoDiv : Model -> Html Msg
 currentBufferInfoDiv model =
-    div [ id "current-buffer-info" ]
-        [ text <| model.currentServerName ++ model.currentChannelName
-        ]
+    let
+        currentPositionText =
+            model.currentServerName ++ " | " ++ model.currentChannelName
+    in
+        div [ id "current-buffer-info" ]
+            [ text currentPositionText ]
 
 
 {-|
