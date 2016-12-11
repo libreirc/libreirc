@@ -157,6 +157,23 @@ updateNewChannelName serverInfoMap serverName newChannelName =
         updatedServerInfoMap
 
 
+updateServerBuffer : ServerInfoMap -> ServerName -> Buffer -> ServerInfoMap
+updateServerBuffer serverInfoMap serverName newServerBuffer =
+    let
+        serverInfo =
+            case D.get serverName serverInfoMap of
+                Just serverInfo ->
+                    serverInfo
+
+                Nothing ->
+                    ServerInfo "ERROR" "" errorBuffer
+
+        updatedServerInfoMap =
+            D.insert serverName { serverInfo | serverBuffer = newServerBuffer } serverInfoMap
+    in
+        updatedServerInfoMap
+
+
 isServerBuffer : ( ServerName, ChannelName ) -> Bool
 isServerBuffer ( _, channelName ) =
     channelName == serverBufferKey
