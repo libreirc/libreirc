@@ -21,6 +21,7 @@ import Task exposing (Task)
 import Dom.Scroll exposing (toBottom)
 -- Local modules
 import Model exposing (..)
+import Port
 
 
 {-| Collection of all msg used inside OpenIRC.
@@ -99,8 +100,22 @@ update msg model =
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
             newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
+
+            -- Payload which will be sent to MQTT broker
+            payload = {
+              namePair = currentNamePair,
+              line = newLog
+            }
+
+            -- Combine tow commands into one
+            cmd = Cmd.batch [
+              -- Publish the message to the MQTT broker
+              Port.publishMsg payload,
+              -- Scroll to the bottom
+              cmdScrollToBottom
+            ]
           in
-            ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmdScrollToBottom )
+            ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmd )
 
       TypeNewLine typedNewLine ->
         let
