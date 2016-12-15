@@ -1,14 +1,4 @@
 module View exposing (view)
-
-import Html exposing (..)
-import Html.Events exposing (onSubmit, onInput, onClick)
-import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
-import Dict as D
-import Tuple exposing (second)
--- Local modules
-import Model exposing (..)
-import Update exposing (Msg(..))
-
 {-| This module includes all view of OpenIRC.
 
 # Top-level View
@@ -23,6 +13,15 @@ import Update exposing (Msg(..))
 
 @docs currentBufferDiv, currentBufferInfoDiv, logsList, newLineForm
 -}
+
+import Html exposing (..)
+import Html.Events exposing (onSubmit, onInput, onClick)
+import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
+import Dict as D
+import Tuple exposing (second)
+-- Local modules
+import Model exposing (..)
+import Update exposing (Msg(..))
 
 {-| Top-level view of OpenIRC. It consists of two components - `bufferListsDiv` showing information about all open
 buffer(sidebar), and `currentBufferDiv` showing information about the current buffer.

@@ -1,8 +1,4 @@
 module Model exposing (..)
-
-import Dict exposing (Dict)
-import Dict as D
-
 {-| This module includes all model-related part of OpenIRC.
 Top-level model consists of four fields: bufferMap, serverInfoMap, currentServerName, currentChannelName.
 
@@ -17,7 +13,11 @@ Top-level model consists of four fields: bufferMap, serverInfoMap, currentServer
 # Getters
 
 @docs getBuffer, getServerInfo, getNick, getNewChannelName, getServerBuffer
+
 -}
+
+import Dict exposing (Dict)
+import Dict as D
 
 {-| Server name is a string
 -}
