@@ -3,34 +3,80 @@ module Model exposing (..)
 import Dict exposing (Dict)
 import Dict as D
 
+{-| This module includes all model-related part of OpenIRC.
+Top-level model consists of four fields: bufferMap, serverInfoMap, currentServerName, currentChannelName.
 
--- Model
+# Definitions
 
+@docs ServerName, ChannelName, NamePair, Line, Buffer, ServerInfo, BufferMap, ServerInfoMap, Model
 
+# Constants
+
+@docs model, errorBuffer, initialServerBuffer, serverBufferKey
+
+# Getters
+
+@docs getBuffer, getServerInfo, getNick, getNewChannelName, getServerBuffer
+-}
+
+{-| Server name is a string
+-}
 type alias ServerName =
     String
 
 
+{-| Channel name is a string
+-}
 type alias ChannelName =
     String
 
 
+{-| A pair of a server name and a channel name
+-}
 type alias NamePair =
     ( ServerName, ChannelName )
 
 
+{-| Line consist of a nick of a user and a text.
+
+    line : Line
+    line = Line "User A" "My name is User A. Nice to meet you!"
+-}
 type alias Line =
     { nick : String
     , text : String
     }
 
 
+{-| Buffer represents a single channel, joined by a user. It l
+It has two fields: `lines`, which represents all available logs, and `newLine`, which represents a new line buffer that the
+user has typed.
+
+    line : Line
+    line = Line "User A" "My name is User A. Nice to meet you!"
+
+    buffer : Buffer [ line ] "I'm typing this line"
+-}
 type alias Buffer =
     { lines : List Line
     , newLine : String
     }
 
 
+{- ServerInfo contains all the information of a user, related to a single server.
+It has three fields: `nick`, current user's nickname, `newChannelName`, which represents the typed new channel name
+the user is trying to join in this server, and `serverBuffer`, a special buffer dedicated to the use of server(e.g.
+connection notification).
+
+    welcomeLine : Line
+    welcomeLine = Line "SERVER" "Welcome to server A."
+
+    serverBuffer : Buffer
+    serverBuffer = Buffer [ welcomeLine ] ""
+
+    serverInfo : ServerInfo
+    serverInfo = "User A" "" serverBuffer
+-}
 type alias ServerInfo =
     { nick : String
     , newChannelName : ChannelName
@@ -38,14 +84,22 @@ type alias ServerInfo =
     }
 
 
+{-| BufferMap is a dictionary mapping `NamePair` to corresponding `Buffer`.
+Note that server buffer is not included in this.
+-}
 type alias BufferMap =
     Dict NamePair Buffer
 
 
+{-| ServerInfoMap is a dictionary mapping `ServerName` to corresponding `ServerInfo`.
+-}
 type alias ServerInfoMap =
     Dict ServerName ServerInfo
 
 
+{-| Current model structure. The pair of `currentServerName` and `currentChannelName` acts as a key identifying
+currently selected buffer. If a user is seeing server buffer, `currentChannelName` is set to `serverBufferKey`.
+-}
 type alias Model =
     { bufferMap : BufferMap
     , serverInfoMap : ServerInfoMap
@@ -54,11 +108,9 @@ type alias Model =
     }
 
 
-serverBufferKey : ChannelName
-serverBufferKey =
-    "Server Buffer"
 
-
+{-| Dummy model which will be used until the backend is implemented.
+-}
 model : Model
 model =
     Model
@@ -75,11 +127,15 @@ model =
         "#a"
 
 
+{-| Buffer represnting that an error has occurred.
+-}
 errorBuffer : Buffer
 errorBuffer =
     Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
 
+{- Dummy initial server buffer. This should be replaced as server-dependent buffer containing welcome message and etc.
+-}
 initialServerBuffer : ServerName -> Buffer
 initialServerBuffer serverName =
     let
@@ -89,6 +145,16 @@ initialServerBuffer serverName =
         Buffer [ Line "WELCOME" welcomeMsg ] ""
 
 
+{-| A constant used as `currentChannelName` when user is seeing server buffer.
+-}
+serverBufferKey : ChannelName
+serverBufferKey =
+    "Server Buffer"
+
+{-| Receives a model and a name pair, returns a corresponding `Buffer`.
+
+    getBuffer model ( "InitServer", "#a" ) == Buffer [] ""
+-}
 getBuffer : Model -> ( ServerName, ChannelName ) -> Buffer
 getBuffer model ( serverName, channelName ) =
     if channelName == serverBufferKey then
@@ -101,7 +167,10 @@ getBuffer model ( serverName, channelName ) =
             Just buffer ->
                 buffer
 
+{-| Receives a model and a server name, returns a corresponding `ServerInfo`.
 
+    getServerInfo model "InitServer" == ServerInfo "InitNick" "" <| InitialServerBuffer "InitServer"
+-}
 getServerInfo : Model -> ServerName -> ServerInfo
 getServerInfo model serverName =
     case D.get serverName model.serverInfoMap of
@@ -112,18 +181,30 @@ getServerInfo model serverName =
             ServerInfo "ERROR" "" errorBuffer
 
 
+{-| Receives a model and a server name, returns a corresponding `nick`.
+
+    getNick model "InitServer" == "InitNick"
+-}
 getNick : Model -> ServerName -> String
 getNick model serverName =
     getServerInfo model serverName
         |> (.nick)
 
 
+{-| Receives a model and a server name, returns a corresponding `newChannelName`.
+
+    getNewChannelName model "InitServer" == ""
+-}
 getNewChannelName : Model -> ServerName -> ChannelName
 getNewChannelName model serverName =
     getServerInfo model serverName
         |> (.newChannelName)
 
 
+{-| Receives a model and a server name, returns a corresponding `serverBuffer`.
+
+    getServerBuffer model "InitServer" == InitialServerBuffer "InitServer"
+-}
 getServerBuffer : Model -> ServerName -> Buffer
 getServerBuffer model serverName =
     getServerInfo model serverName
