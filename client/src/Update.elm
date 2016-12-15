@@ -1,13 +1,4 @@
 module Update exposing (Msg(..), update)
-
-import String exposing (isEmpty, startsWith)
-import Dict exposing (Dict)
-import Dict as D
-import Task exposing (Task)
-import Dom.Scroll exposing (toBottom)
--- Local modules
-import Model exposing (..)
-
 {-| This module includes all update-related part of OpenIRC.
 
 # Definitions
@@ -22,6 +13,15 @@ import Model exposing (..)
 
 @docs updateBufferMap, updateNewChannelName, updateServerBuffer, isServerBuffer, isValidNewBuffer
 -}
+
+import String exposing (isEmpty, startsWith)
+import Dict exposing (Dict)
+import Dict as D
+import Task exposing (Task)
+import Dom.Scroll exposing (toBottom)
+-- Local modules
+import Model exposing (..)
+
 
 {-| Collection of all msg used inside OpenIRC.
 
