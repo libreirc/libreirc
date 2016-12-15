@@ -1,6 +1,7 @@
 module App exposing (main)
 
 import Html exposing (Html)
+-- Local modules
 import Model exposing (model)
 import View exposing (view)
 import Update exposing (update)
