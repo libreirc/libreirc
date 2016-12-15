@@ -1,4 +1,4 @@
-module Update exposing (..)
+module Update exposing (Msg(..), update)
 
 import String exposing (isEmpty, startsWith)
 import Dict exposing (Dict)

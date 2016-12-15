@@ -1,4 +1,4 @@
-module View exposing (..)
+module View exposing (view)
 
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput, onClick)
