@@ -56,8 +56,8 @@ type Msg
   | TypeNewLine String
   | TypeNewChannelName ServerName ChannelName
   | CreateBuffer ServerName
-  | ChangeBuffer ( ServerName, ChannelName )
-  | CloseBuffer ( ServerName, ChannelName )
+  | ChangeBuffer NamePair
+  | CloseBuffer NamePair
   | Noop
 
 
