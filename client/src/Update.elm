@@ -54,6 +54,7 @@ case Msg of
 -}
 type Msg
   = SendLine
+  | ReceiveLine Port.MqttPayload
   | TypeNewLine String
   | TypeNewChannelName ServerName ChannelName
   | CreateBuffer ServerName
@@ -99,23 +100,33 @@ update msg model =
             newLog = Line currentNick currentBuffer.newLine
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
-            newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [ newLog ] }
+            newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [newLog] }
+            -- Updated model
+            newModel = { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }
 
-            -- Payload which will be sent to MQTT broker
-            payload = {
+            -- Publish the message to the MQTT broker
+            cmd = Port.publishMsg {
               namePair = currentNamePair,
               line = newLog
             }
-
-            -- Combine tow commands into one
-            cmd = Cmd.batch [
-              -- Publish the message to the MQTT broker
-              Port.publishMsg payload,
-              -- Scroll to the bottom
-              cmdScrollToBottom
-            ]
           in
-            ( { model | bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer }, cmd )
+            (newModel, cmd)
+
+      ReceiveLine payload ->
+        let
+          -- TODO: 자기가 보낸 메세지 무시하는거 필요함
+
+          -- Buffer to add the message
+          targetBuffer = getBuffer model payload.namePair
+          -- Updated buffer
+          newBuffer = { targetBuffer | lines = targetBuffer.lines ++ [payload.line] }
+          -- Updated model
+          newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
+
+          -- Scroll to the bottom
+          cmd = cmdScrollToBottom
+        in
+          (newModel, cmd)
 
       TypeNewLine typedNewLine ->
         let

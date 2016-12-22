@@ -1,4 +1,4 @@
-port module Port exposing (publishMsg)
+port module Port exposing (publishMsg, MqttPayload)
 {-| A module that defines the ports that communicate with the outside js world.
 
 ###### References
