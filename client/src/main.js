@@ -24,6 +24,8 @@ app.ports.publishMsg.subscribe(function(payload) {
   var topic = payload.namePair.map(window.btoa).join();
   var msg = msgpack.encode(payload.line);
 
+  // TODO: 랜덤 임시 ID 만들기
+
   // TODO: QoS 2 쓰기
   client.publish(topic, msg, function(err) {
     if (err) {
@@ -44,10 +46,5 @@ client.on('message', function(topic, msg, _packet) {
     line: msgpack.decode(msg)
   };
 
-  // TODO: Elm으로 payload 보내기
-  // console.log(payload);
-
-  // TODO: 아래 라인 삭제, 올바르게 처리하기
-  console.log(`%c<@${payload.line.nick}> ${payload.line.text}`,
-    'color: blue; font-weight: bold;');
+  app.ports.subscribeMsg.send(payload);
 });

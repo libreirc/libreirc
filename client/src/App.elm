@@ -10,14 +10,15 @@ import Html exposing (Html)
 import Model exposing (model)
 import View exposing (view)
 import Update exposing (update)
+import Subscriptions exposing (subscriptions)
 
 
 {-| Entry point for OpenIRC Elm codes -}
 main : Program Never Model.Model Update.Msg
-main =
-  Html.program
-    { init = ( model, Cmd.none )
-    , view = view
-    , update = update
-    , subscriptions = \_ -> Sub.none
-    }
+main = Html.program
+  {
+    init = (model, Cmd.none),
+    view = view,
+    update = update,
+    subscriptions = subscriptions
+  }

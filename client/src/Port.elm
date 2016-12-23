@@ -1,4 +1,9 @@
-port module Port exposing (publishMsg, MqttPayload)
+port module Port exposing
+  (
+    MqttPayload,
+    publishMsg,
+    subscribeMsg
+  )
 {-| A module that defines the ports that communicate with the outside js world.
 
 ###### References
@@ -16,5 +21,8 @@ type alias MqttPayload =
     line : Line
   }
 
-{-| Port for publishing MQTT message. -}
+{-| Port for publishing MQTT messages. -}
 port publishMsg : MqttPayload -> Cmd msg
+
+{-| Port for subscribing MQTT messages. -}
+port subscribeMsg : (MqttPayload -> msg) -> Sub msg
