@@ -54,7 +54,7 @@ case Msg of
 -}
 type Msg
   = SendLine
-  | ReceiveLine Port.MqttPayload
+  | ReceiveLine Port.Payload
   | TypeNewLine String
   | TypeNewChannelName ServerName ChannelName
   | CreateBuffer ServerName
@@ -82,7 +82,8 @@ update msg model =
         -- Any SendLine to a server buffer is considered as an error for now.
         if isServerBuffer currentNamePair then
           let
-            errorLog = Line "ERROR" "You cannot send a line to the server buffer."
+            errorLog : Line
+            errorLog = Line "ERROR" "You cannot send a line to the server buffer." Completed
 
             -- Add a error line to `lines` of current buffer, and set `newLine` of it to empty string.
             newBuffer = { currentBuffer | newLine = "" , lines = currentBuffer.lines ++ [ errorLog ] }
@@ -97,7 +98,13 @@ update msg model =
         else
           -- Otherwise, send a line and scroll the log to the bottom.
           let
-            newLog = Line currentNick currentBuffer.newLine
+            newLog : Line
+            newLog = {
+              nick = currentNick,
+              text = currentBuffer.newLine,
+              -- TODO: 늘어나라
+              status = Transmitting 12345
+            }
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
             newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [newLog] }

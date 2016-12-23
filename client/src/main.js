@@ -17,7 +17,7 @@ client.subscribe('SW5pdFNlcnZlcg==,I2E=', function(err, granted) {
   console.log(`Subscribe 완료 (err: ${err}, granted: ${granted})`);
 });
 
-app.ports.publishMsg.subscribe(function(payload) {
+app.ports.onMessage.subscribe(function(payload) {
   // Base64 encode both serverName and channelName then join them with ','
   //
   //     ['InitServer', '#a'] => 'SW5pdFNlcnZlcg==,I2E='
@@ -46,5 +46,5 @@ client.on('message', function(topic, msg, _packet) {
     line: msgpack.decode(msg)
   };
 
-  app.ports.subscribeMsg.send(payload);
+  app.ports.newMessage.send(payload);
 });

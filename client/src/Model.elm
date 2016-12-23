@@ -19,25 +19,29 @@ Top-level model consists of four fields: bufferMap, serverInfoMap, currentServer
 import Dict exposing (Dict)
 import Dict as D
 
-{-| Server name is a string
+{-| Server name is a string -}
+type alias ServerName = String
+
+{-| Channel name is a string -}
+type alias ChannelName = String
+
+{-| A pair of a server name and a channel name -}
+type alias NamePair = (ServerName, ChannelName)
+
+{-| Type which indicates the status of single `Line`.
+
+-   `Transmitting` means the `Line` is still being transmitted. The `String`
+    value in the `Transmitting` constructor is the temporary unique identifier
+    for uncompleted transmittion.
+
+-   `Completed` means the `Line` is fully transmitted and finished the
+    round-trip.
+
 -}
-type alias ServerName =
-  String
+type LineStatus = Transmitting Int
+                | Completed
 
-
-{-| Channel name is a string
--}
-type alias ChannelName =
-  String
-
-
-{-| A pair of a server name and a channel name
--}
-type alias NamePair =
-  ( ServerName, ChannelName )
-
-
-{-| Line consist of a nick of a user and a text.
+{-| Line consist of a nickname of the user, a text and status of the line.
 
 ```elm
 line : Line
@@ -45,8 +49,10 @@ line = Line "User A" "My name is User A. Nice to meet you!"
 ```
 -}
 type alias Line =
-  { nick : String
-  , text : String
+  {
+    nick: String,
+    text: String,
+    status: LineStatus
   }
 
 
@@ -137,7 +143,7 @@ model =
 -}
 errorBuffer : Buffer
 errorBuffer =
-  Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
+  Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." Completed ] ""
 
 
 {- Dummy initial server buffer. This should be replaced as server-dependent buffer containing welcome message and etc.
@@ -148,7 +154,7 @@ initialServerBuffer serverName =
     welcomeMsg =
       "WELCOME TO " ++ serverName ++ " SERVER."
   in
-    Buffer [ Line "WELCOME" welcomeMsg ] ""
+    Buffer [ Line "WELCOME" welcomeMsg Completed ] ""
 
 
 {-| A constant used as `currentChannelName` when user is seeing server buffer.
