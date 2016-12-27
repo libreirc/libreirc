@@ -46,5 +46,13 @@ client.on('message', function(topic, msg, _packet) {
     line: msgpack.decode(msg)
   };
 
+  // TODO: Remove the line below
+  console.log(
+    `%c${payload.line.status} %c<@${payload.line.nick}> ${payload.line.text}`,
+    'color: gray;',
+    'color: blue; font-weight: bold;'
+  );
+
+
   app.ports.newMessage.send(payload);
 });

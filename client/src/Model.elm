@@ -109,20 +109,40 @@ type alias ServerInfoMap =
   Dict ServerName ServerInfo
 
 
+{-| This type stores the information about a single MQTT connection.
+
+The `Int` value of the `Session` type represents the message counter of this
+session. Everytime you send a new message, this counter goes up by one.
+
+    Counter |       Action
+    --------|-----------------
+       0    | (Initial state)
+            |  Send a message
+       1    |
+            |  Send a message
+       2    |
+            |  Send a message
+       3    |
+
+-}
+type Session = Counter Int
+
+
 {-| Current model structure. The pair of `currentServerName` and `currentChannelName` acts as a key identifying
 currently selected buffer. If a user is seeing server buffer, `currentChannelName` is set to `serverBufferKey`.
 -}
 type alias Model =
-  { bufferMap : BufferMap
-  , serverInfoMap : ServerInfoMap
-  , currentServerName : ServerName
-  , currentChannelName : ChannelName
+  {
+    bufferMap: BufferMap,
+    serverInfoMap: ServerInfoMap,
+    currentServerName: ServerName,
+    currentChannelName: ChannelName,
+    session: Session
   }
 
 
 
-{-| Dummy model which will be used until the backend is implemented.
--}
+{-| Dummy model which will be used until the backend is implemented. -}
 model : Model
 model =
   Model
@@ -137,6 +157,7 @@ model =
     )
     "InitServer"
     "#a"
+    (Counter 0)
 
 
 {-| Buffer represnting that an error has occurred.
