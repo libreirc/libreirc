@@ -111,8 +111,10 @@ type alias ServerInfoMap =
 
 {-| This type stores the information about a single MQTT connection.
 
-The `Int` value of the `Session` type represents the message counter of this
-session. Everytime you send a new message, this counter goes up by one.
+The `id` is the random identifier created in the beginning of the program.
+
+The `counter` represents the message counter of this session. Everytime you send
+a new message, this counter goes up by one.
 
     Counter |       Action
     --------|-----------------
@@ -125,7 +127,11 @@ session. Everytime you send a new message, this counter goes up by one.
        3    |
 
 -}
-type Session = Counter Int
+type alias Session =
+  {
+    id: Int,
+    counter: Int
+  }
 
 
 {-| Current model structure. The pair of `currentServerName` and `currentChannelName` acts as a key identifying
@@ -157,7 +163,10 @@ model =
     )
     "InitServer"
     "#a"
-    (Counter 0)
+    {
+      id = 123456789, -- TODO: Randomize
+      counter = 0
+    }
 
 
 {-| Buffer represnting that an error has occurred.

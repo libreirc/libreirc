@@ -98,23 +98,22 @@ update msg model =
         else
           -- Otherwise, send a line and scroll the log to the bottom.
           let
-            -- Retrieve count
-            (Counter count) = model.session
-
             -- Make new line
             newLine : Line
             newLine = {
               nick = currentNick,
               text = currentBuffer.newLine,
-              status = Transmitting count
+              status = Transmitting model.session.counter
             }
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
             newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [newLine] }
             -- Updated model
+            newModel : Model
             newModel = { model |
               bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer,
-              session = Counter (count + 1)
+              session = let session = model.session
+                        in { session | counter = session.counter + 1 }
             }
 
             -- Publish the message to the MQTT broker
