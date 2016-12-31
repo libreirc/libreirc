@@ -15,9 +15,9 @@ import Update exposing (update)
 {-| Entry point for OpenIRC Elm codes -}
 main : Program Never Model.Model Update.Msg
 main =
-    Html.program
-        { init = ( model, Cmd.none )
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+  Html.program
+    { init = ( model, Cmd.none )
+    , view = view
+    , update = update
+    , subscriptions = \_ -> Sub.none
+    }
