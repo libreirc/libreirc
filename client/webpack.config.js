@@ -1,19 +1,28 @@
+'use strict';
 const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+
 // Always enabled plugins
-const plugs = [
+const plugins = [
+  // Extract CSS files to the 'bundle.css'.
   new ExtractTextPlugin('_bundle.css')
 ];
 
 // Production only plugins
-const prod = [
-  new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
-  new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
-];
+if (process.env.NODE_ENV !== 'production') {
+  plugins.concat([
+    // Pass the 'NODE_ENV=production' environment variable to the child processes.
+    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
+    // Minimize the output
+    new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
+  ]);
+}
 
+
+// Configs
 module.exports = {
   entry: './main.js',
   context: path.resolve(__dirname, 'src'),
@@ -25,8 +34,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.txt$/, loader: 'raw' },
-      { test: /\.png$/, loader: 'file?name=static/[hash].[ext]' },
-      { test: /\.(woff2?|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=static/[hash].[ext]' },
+      { test: /\.(?:png|(?:woff2?|ttf|eot|svg)(?:\?v=[0-9]\.[0-9]\.[0-9])?)$/, loader: 'file?name=static/[hash].[ext]' },
       { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css') },
       { test: /\.styl$/, loader: ExtractTextPlugin.extract('style', 'css!postcss!stylus') },
       {
@@ -36,7 +44,7 @@ module.exports = {
       }
     ]
   },
-  plugins: process.env.NODE_ENV !== 'production' ? plugs : plugs.concat(prod),
+  plugins,
   devtool: 'source-map',
   postcss: _ => [autoprefixer]
 };
