@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -15,7 +16,7 @@ const prod = [
 
 module.exports = {
   entry: './main.js',
-  context: `${__dirname}/src`,
+  context: path.resolve(__dirname, 'src'),
   output: {
     filename: '_bundle.js',
     path: `${__dirname}/../server/public/build`,
