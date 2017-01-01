@@ -1,13 +1,29 @@
 language: node_js
 node_js: node
-cache: yarn
+
+cache:
+  yarn: true
+  directories:
+    - $HOME/.cpus
 
 before_install:
   # Install yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
-  # Change working directory
-  - cd client
+
+  # Install sysconfcpus
+  # Reference: https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+  - |
+    export PATH=$HOME/.cpus/bin:$PATH;
+    if ! hash sysconfcpus 2>/dev/null; then
+      git clone --depth=1 https://github.com/obmarg/libsysconfcpus.git "$HOME/libsysconfcpus";
+      cd "$HOME/libsysconfcpus";
+      ./configure --prefix="$HOME/.cpus";
+      make -j2 install;
+    fi
+
+  # Prepare working directory
+  - cd "$TRAVIS_BUILD_DIR/client"
 
 # Install dependencies
 install:
@@ -15,4 +31,4 @@ install:
 
 # Build
 script:
-  - yarn build
+  - sysconfcpus -n 2 yarn build
