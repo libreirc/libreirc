@@ -25,24 +25,31 @@ import Model exposing (..)
 
 {-| Collection of all msg used inside OpenIRC.
 
-  case Msg of
-    -- msg regarding a new line in currently selected buffer
-    SendLine        -> "Send currently typed line by TypeNewLine (you can think of this as 'typing enter')."
-    TypeNewLine ...     -> "Type a text in input for new line, at the bottom of the current buffer."
+```elm
+case Msg of
+  -- msg regarding a new line in currently selected buffer
+  SendLine            -- Send currently typed line by TypeNewLine.
+                      -- You can think of this as 'typing enter.'
 
-    -- msg regarding creating(joining to) a new buffer
-    TypeNewChannelName ...  -> "Type a text in input for new channel name, at the sidebar."
-    CreateBuffer ...    -> "Create(join to) a new buffer inside a server. Name of the channel being created is
-      current server's `newChannelName`."
+  TypeNewLine         -- Type a text in input for new line, at the
+                      -- bottom of the current buffer
 
-    -- msg used for changing curerntly selected buffer
-    ChangeBuffer ...    -> "Change the currently selected buffer to a specified buffer".
+  -- msg regarding creating(joining to) a new buffer
+  TypeNewChannelName  -- Type a text in input for new channel name, at the sidebar.
 
-    -- msg used for closing(quitting from) a buffer
-    CloseBuffer ...     -> "Close(quit from) a specified buffer."
+  CreateBuffer        -- Create(join to) a new buffer inside a server.
+                      -- Name of the channel being created is current
+                      -- server's `newChannelName`.
 
-    -- msg doing nothing (this is needed because of the `update` function's required type signature)
-    Noop          -> "Do nothing."
+  -- msg used for changing curerntly selected buffer
+  ChangeBuffer        -- Change the currently selected buffer to a specified buffer.
+
+  -- msg used for closing(quitting from) a buffer
+  CloseBuffer         -- Close(quit from) a specified buffer.
+
+  -- msg doing nothing (this is needed because of the `update` function's required type signature)
+  Noop                -- Do nothing.
+```
 -}
 type Msg
   = SendLine
@@ -190,16 +197,17 @@ cmdScrollToBottom =
 {-| Helper function for updating `BufferMap`. Takes 1. Old bufferMap, 2. Dict key (name pair), 3. Dict value (buffer).
 Returns a new bufferMap, with value for a given key is updated to a given value.
 
+```elm
+oldBufferMap : BufferMap
 
-  oldBufferMap : BufferMap
+namePairForNewBuffer : NamePair
 
-  namePairForNewBuffer : NamePair
+newBuffer : Buffer
 
-  newBuffer : Buffer
+newBufferMap : BufferMap
 
-  newBufferMap : BufferMap
-
-  updateBufferMap oldBufferMap namePairForNewBuffer newBuffer == newBufferMap
+updateBufferMap oldBufferMap namePairForNewBuffer newBuffer == newBufferMap
+```
 -}
 updateBufferMap : BufferMap -> NamePair -> Buffer -> BufferMap
 updateBufferMap bufferMap namePair newBuffer =
@@ -209,15 +217,17 @@ updateBufferMap bufferMap namePair newBuffer =
 {-| Helper function for updating `ServerInfoMap`. Takes 1. Old serverInfoMap, 2. Dict key (server name), 3. Dict value
 (new channel name). Returns a new serverInfoMap, with value for a given key is updated to a given value.
 
-  oldServerInfoMap : ServerInfoMap
+```elm
+oldServerInfoMap : ServerInfoMap
 
-  serverName : ServerName
+serverName : ServerName
 
-  newChannelName : ChannelName
+newChannelName : ChannelName
 
-  newServerInfoMap : ServerInfoMap
+newServerInfoMap : ServerInfoMap
 
-  updateNewChannelName oldServerInfoMap serverName newChannelName == newServerInfoMap
+updateNewChannelName oldServerInfoMap serverName newChannelName == newServerInfoMap
+```
 -}
 updateNewChannelName : ServerInfoMap -> ServerName -> ChannelName -> ServerInfoMap
 updateNewChannelName oldServerInfoMap serverName newChannelName =
@@ -238,15 +248,17 @@ updateNewChannelName oldServerInfoMap serverName newChannelName =
 {-| Helper function for updating `ServerInfoMap`. Takes 1. Old serverInfoMap, 2. Dict key (server name), 3. Dict value
 (new channel name). Returns a new serverInfoMap, with value for a given key is updated to a given value.
 
-  oldServerInfoMap : ServerInfoMap
+```elm
+oldServerInfoMap : ServerInfoMap
 
-  serverName : ServerName
+serverName : ServerName
 
-  newServerBuffer : Buffer
+newServerBuffer : Buffer
 
-  newServerInfoMap : ServerInfoMap
+newServerInfoMap : ServerInfoMap
 
-  updateNewChannelName oldServerInfoMap serverName newChannelName == newServerInfoMap
+updateNewChannelName oldServerInfoMap serverName newChannelName == newServerInfoMap
+```
 -}
 updateServerBuffer : ServerInfoMap -> ServerName -> Buffer -> ServerInfoMap
 updateServerBuffer oldServerInfoMap serverName newServerBuffer =

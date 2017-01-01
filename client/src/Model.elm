@@ -39,8 +39,10 @@ type alias NamePair =
 
 {-| Line consist of a nick of a user and a text.
 
-  line : Line
-  line = Line "User A" "My name is User A. Nice to meet you!"
+```elm
+line : Line
+line = Line "User A" "My name is User A. Nice to meet you!"
+```
 -}
 type alias Line =
   { nick : String
@@ -52,10 +54,12 @@ type alias Line =
 It has two fields: `lines`, which represents all available logs, and `newLine`, which represents a new line buffer that the
 user has typed.
 
-  line : Line
-  line = Line "User A" "My name is User A. Nice to meet you!"
+```elm
+line : Line
+line = Line "User A" "My name is User A. Nice to meet you!"
 
-  buffer : Buffer [ line ] "I'm typing this line"
+buffer : Buffer [ line ] "I'm typing this line"
+```
 -}
 type alias Buffer =
   { lines : List Line
@@ -68,14 +72,16 @@ It has three fields: `nick`, current user's nickname, `newChannelName`, which re
 the user is trying to join in this server, and `serverBuffer`, a special buffer dedicated to the use of server(e.g.
 connection notification).
 
-  welcomeLine : Line
-  welcomeLine = Line "SERVER" "Welcome to server A."
+```elm
+welcomeLine : Line
+welcomeLine = Line "SERVER" "Welcome to server A."
 
-  serverBuffer : Buffer
-  serverBuffer = Buffer [ welcomeLine ] ""
+serverBuffer : Buffer
+serverBuffer = Buffer [ welcomeLine ] ""
 
-  serverInfo : ServerInfo
-  serverInfo = "User A" "" serverBuffer
+serverInfo : ServerInfo
+serverInfo = "User A" "" serverBuffer
+```
 -}
 type alias ServerInfo =
   { nick : String
@@ -169,7 +175,9 @@ getBuffer model ( serverName, channelName ) =
 
 {-| Receives a model and a server name, returns a corresponding `ServerInfo`.
 
-  getServerInfo model "InitServer" == ServerInfo "InitNick" "" <| InitialServerBuffer "InitServer"
+```elm
+getServerInfo model "InitServer" == ServerInfo "InitNick" "" <| InitialServerBuffer "InitServer"
+```
 -}
 getServerInfo : Model -> ServerName -> ServerInfo
 getServerInfo model serverName =
@@ -183,7 +191,9 @@ getServerInfo model serverName =
 
 {-| Receives a model and a server name, returns a corresponding `nick`.
 
-  getNick model "InitServer" == "InitNick"
+```elm
+getNick model "InitServer" == "InitNick"
+```
 -}
 getNick : Model -> ServerName -> String
 getNick model serverName =
@@ -193,7 +203,9 @@ getNick model serverName =
 
 {-| Receives a model and a server name, returns a corresponding `newChannelName`.
 
-  getNewChannelName model "InitServer" == ""
+```elm
+getNewChannelName model "InitServer" == ""
+```
 -}
 getNewChannelName : Model -> ServerName -> ChannelName
 getNewChannelName model serverName =
@@ -203,7 +215,9 @@ getNewChannelName model serverName =
 
 {-| Receives a model and a server name, returns a corresponding `serverBuffer`.
 
-  getServerBuffer model "InitServer" == InitialServerBuffer "InitServer"
+```elm
+getServerBuffer model "InitServer" == InitialServerBuffer "InitServer"
+```
 -}
 getServerBuffer : Model -> ServerName -> Buffer
 getServerBuffer model serverName =

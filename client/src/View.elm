@@ -35,6 +35,7 @@ view model =
 
 
 {-| Div showing information of all open buffer, indexed by server (sidebar).
+
 TODO: Support multi-server architecture - multiple `<ul>` must be able to exist
 -}
 bufferListsDiv : Model -> Html Msg
@@ -47,8 +48,10 @@ bufferListsDiv model =
 
 {-| List item showing a server name.
 
-  relatedMsgs : List Msg
-  relatedMsgs == [ ChangeBuffer ]
+```elm
+relatedMsgs : List Msg
+relatedMsgs == [ ChangeBuffer ]
+```
 -}
 serverNameItem : ServerName -> Html Msg
 serverNameItem name =
@@ -64,8 +67,10 @@ serverNameItem name =
 {-| `List` of list items, where each of them showing the name of a open buffer.
 TODO: Add server name to arguement, only show namePairs which belongs to the server.
 
-  relatedMsgs : List Msg
-  relatedMsgs == [ ChangeBuffer, CloseBuffer ]
+```elm
+relatedMsgs : List Msg
+relatedMsgs == [ ChangeBuffer, CloseBuffer ]
+```
 -}
 bufferNameItems : Model -> List (Html Msg)
 bufferNameItems model =
@@ -96,8 +101,10 @@ bufferNameItems model =
 
 {-| List item for joining new buffer.
 
-  relatedMsgs : List Msg
-  relatedMsgs == [ CreateBuffer, TypeNewChannelName ]
+```elm
+relatedMsgs : List Msg
+relatedMsgs == [ CreateBuffer, TypeNewChannelName ]
+```
 -}
 newBufferItem : Model -> Html Msg
 newBufferItem model =
@@ -158,8 +165,10 @@ logsList model =
 
 {-| Form for typing new line for the current buffer.
 
-  relatedMsgs : List Msg
-  relatedMsgs == [ SendLine, TypeNewLine ]
+```elm
+relatedMsgs : List Msg
+relatedMsgs == [ SendLine, TypeNewLine ]
+```
 -}
 newLineForm : Model -> Html Msg
 newLineForm model =
