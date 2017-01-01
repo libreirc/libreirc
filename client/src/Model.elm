@@ -67,7 +67,7 @@ type alias Buffer =
   }
 
 
-{- ServerInfo contains all the information of a user, related to a single server.
+{-| ServerInfo contains all the information of a user, related to a single server.
 It has three fields: `nick`, current user's nickname, `newChannelName`, which represents the typed new channel name
 the user is trying to join in this server, and `serverBuffer`, a special buffer dedicated to the use of server(e.g.
 connection notification).
@@ -140,8 +140,8 @@ errorBuffer =
   Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
 
-{- Dummy initial server buffer. This should be replaced as server-dependent buffer containing welcome message and etc.
--}
+{-| Dummy initial server buffer. This should be replaced as server-dependent
+buffer containing welcome message and etc. -}
 initialServerBuffer : ServerName -> Buffer
 initialServerBuffer serverName =
   let

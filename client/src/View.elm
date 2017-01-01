@@ -4,14 +4,6 @@ module View exposing (view)
 # Top-level View
 
 @docs view
-
-# bufferListsDiv components
-
-@docs bufferListsDiv, serverNameItem, bufferNameItems, newBufferItem
-
-# currentBufferDiv components
-
-@docs currentBufferDiv, currentBufferInfoDiv, logsList, newLineForm
 -}
 
 import Html exposing (..)

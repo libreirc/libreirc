@@ -3,7 +3,11 @@ module App exposing (main)
 
 Most of the OpenIRC client-side code is written in Elm. Only a small part of the
 codes like communicating with outside world using MQTT.js is written in
-Javascript. -}
+Javascript.
+
+@docs main
+
+-}
 
 import Html exposing (Html)
 -- Local modules

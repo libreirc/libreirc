@@ -3,6 +3,7 @@
   "scripts": {
     "ii": "yarn && elm-package install --yes",
     "build": "NODE_ENV=production webpack --optimize-occurrence-order",
+    "doc": "elm-make --docs=elm-stuff/doc.json",
     "watch": "webpack --watch"
   },
   "devDependencies": {

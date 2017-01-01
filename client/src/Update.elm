@@ -3,15 +3,11 @@ module Update exposing (Msg(..), update)
 
 # Definitions
 
-@docs Msg, cmdScrollToBottom
+@docs Msg
 
 # Main update function
 
 @docs update
-
-# Helper functions
-
-@docs updateBufferMap, updateNewChannelName, updateServerBuffer, isServerBuffer, isValidNewBuffer
 -}
 
 import String exposing (isEmpty, startsWith)
