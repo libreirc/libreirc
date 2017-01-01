@@ -11,7 +11,7 @@ before_install:
 
 # Install dependencies
 install:
-  - yarn
+  - yarn ii
 
 # Build
 script:
