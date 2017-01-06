@@ -13,7 +13,7 @@ const plugins = [
 
 // Production only plugins
 if (process.env.NODE_ENV === 'production') {
-  plugins.concat([
+  plugins.splice(0, 0, ...[
     // Pass the 'NODE_ENV=production' environment variable to the child processes.
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
     // Minimize the output
