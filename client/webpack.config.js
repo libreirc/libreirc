@@ -6,14 +6,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 
 // Always enabled plugins
-const plugins = [
+let plugins = [
   // Extract CSS files to the 'bundle.css'.
   new ExtractTextPlugin('_bundle.css')
 ];
 
 // Production only plugins
 if (process.env.NODE_ENV === 'production') {
-  plugins.splice(0, 0, ...[
+  plugins = plugins.concat([
     // Pass the 'NODE_ENV=production' environment variable to the child processes.
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
     // Minimize the output
