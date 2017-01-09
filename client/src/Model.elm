@@ -51,8 +51,7 @@ line = Line "User A" "My name is User A. Nice to meet you!"
 type alias Line =
   {
     nick: String,
-    text: String,
-    status: LineStatus
+    text: String
   }
 
 
@@ -173,7 +172,7 @@ model =
 -}
 errorBuffer : Buffer
 errorBuffer =
-  Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." Completed ] ""
+  Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
 
 
 {- Dummy initial server buffer. This should be replaced as server-dependent buffer containing welcome message and etc.
@@ -184,7 +183,7 @@ initialServerBuffer serverName =
     welcomeMsg =
       "WELCOME TO " ++ serverName ++ " SERVER."
   in
-    Buffer [ Line "WELCOME" welcomeMsg Completed ] ""
+    Buffer [ Line "WELCOME" welcomeMsg ] ""
 
 
 {-| A constant used as `currentChannelName` when user is seeing server buffer.

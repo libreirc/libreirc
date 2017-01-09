@@ -33,8 +33,7 @@ type alias MqttPayload =
     namePair : NamePair,
     line: {
       nick: String,
-      text: String,
-      status: Maybe Float
+      text: String
     },
     session: Session
   }
@@ -62,10 +61,7 @@ publishMsg payload =
     namePair = payload.namePair,
     line = {
       nick = payload.line.nick,
-      text = payload.line.text,
-      status = case payload.line.status of
-        Model.Transmitting tempId -> Just (toFloat tempId)
-        Model.Completed -> Nothing
+      text = payload.line.text
     },
     session = payload.session
   }
@@ -79,10 +75,7 @@ subscribeMsg tagger =
       namePair = mqtt.namePair,
       line = {
         nick = mqtt.line.nick,
-        text = mqtt.line.text,
-        status = case mqtt.line.status of
-          Just tempId -> Model.Transmitting (round tempId)
-          Nothing -> Model.Completed
+        text = mqtt.line.text
       },
       session = mqtt.session
     }

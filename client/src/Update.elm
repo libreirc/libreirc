@@ -83,7 +83,7 @@ update msg model =
         if isServerBuffer currentNamePair then
           let
             errorLog : Line
-            errorLog = Line "ERROR" "You cannot send a line to the server buffer." Completed
+            errorLog = Line "ERROR" "You cannot send a line to the server buffer."
 
             -- Add a error line to `lines` of current buffer, and set `newLine` of it to empty string.
             newBuffer = { currentBuffer | newLine = "" , lines = currentBuffer.lines ++ [ errorLog ] }
@@ -102,8 +102,7 @@ update msg model =
             newLine : Line
             newLine = {
               nick = currentNick,
-              text = currentBuffer.newLine,
-              status = Transmitting model.session.counter
+              text = currentBuffer.newLine
             }
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
