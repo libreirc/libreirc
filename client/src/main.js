@@ -22,7 +22,7 @@ app.ports.onMessage.subscribe(function(payload) {
   //
   //     ['InitServer', '#a'] => 'SW5pdFNlcnZlcg==,I2E='
   var topic = payload.namePair.map(window.btoa).join();
-  var msg = msgpack.encode(payload.line);
+  var msg = msgpack.encode({ line: payload.line, session: payload.session });
 
   // TODO: 랜덤 임시 ID 만들기
 
@@ -38,12 +38,14 @@ app.ports.onMessage.subscribe(function(payload) {
 });
 
 client.on('message', function(topic, msg, _packet) {
+  var decodedMsg = msgpack.decode(msg);
   var payload = {
     // Split the string with ',' and base64 decode each of it
     //
     //     'SW5pdFNlcnZlcg==,I2E=' => ['InitServer', '#a']
     namePair: topic.split(',').map(atob),
-    line: msgpack.decode(msg)
+    line: decodedMsg.line,
+    session: decodedMsg.session
   };
 
   // TODO: Remove the line below

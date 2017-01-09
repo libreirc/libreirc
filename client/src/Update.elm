@@ -119,7 +119,8 @@ update msg model =
             -- Publish the message to the MQTT broker
             cmd = Port.publishMsg {
               namePair = currentNamePair,
-              line = newLine
+              line = newLine,
+              session = model.session
             }
           in
             (newModel, cmd)

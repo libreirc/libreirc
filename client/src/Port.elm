@@ -19,8 +19,7 @@ port module Port exposing
 
 -}
 
-import Model exposing (NamePair, Line)
-
+import Model exposing (NamePair, Line, Session)
 
 -- Low-level functions
 {-| Type which will be actually sent across elm-js boundary.
@@ -36,7 +35,8 @@ type alias MqttPayload =
       nick: String,
       text: String,
       status: Maybe Float
-    }
+    },
+    session: Session
   }
 
 {-| Port for publishing MQTT messages. -}
@@ -50,7 +50,8 @@ port newMessage : (MqttPayload -> msg) -> Sub msg
 type alias Payload =
   {
     namePair: NamePair,
-    line: Line
+    line: Line,
+    session: Session
   }
 
 
@@ -65,7 +66,8 @@ publishMsg payload =
       status = case payload.line.status of
         Model.Transmitting tempId -> Just (toFloat tempId)
         Model.Completed -> Nothing
-    }
+    },
+    session = payload.session
   }
 
 {-| Port for subscribing MQTT messages. -}
@@ -81,6 +83,7 @@ subscribeMsg tagger =
         status = case mqtt.line.status of
           Just tempId -> Model.Transmitting (round tempId)
           Nothing -> Model.Completed
-      }
+      },
+      session = mqtt.session
     }
   in newMessage (convert >> tagger)
