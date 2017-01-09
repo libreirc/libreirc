@@ -17,6 +17,7 @@ module View exposing (view)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput, onClick)
 import Html.Attributes exposing (id, class, type_, placeholder, value, autocomplete)
+import Array as A
 import Dict as D
 import Tuple exposing (second)
 -- Local modules
@@ -161,10 +162,10 @@ logsList model =
       Completed       -> "✓"
   in
     ul [ id "logs" ]
-      (currentBuffer.lines
-        |> List.map (\line -> li []
-          [ text ("<@" ++ line.nick ++ "> " ++ line.text)
-          , text <| statusIcon line ])
+      (A.toList (currentBuffer.lines
+        |> A.map (\line -> li []
+          [ text ("<@" ++ line.nick ++ "> " ++ line.text)]))
+--        , text <| statusIcon line ])
       )
 
 
