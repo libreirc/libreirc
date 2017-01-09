@@ -156,10 +156,15 @@ logsList model =
     currentNamePair = ( model.currentServerName, model.currentChannelName )
 
     currentBuffer = getBuffer model currentNamePair
+    statusIcon line = case line.status of
+      Transmitting _  -> "…"
+      Completed       -> "✓"
   in
     ul [ id "logs" ]
       (currentBuffer.lines
-        |> List.map (\line -> li [] [ text ("<@" ++ line.nick ++ "> " ++ line.text) ])
+        |> List.map (\line -> li []
+          [ text ("<@" ++ line.nick ++ "> " ++ line.text)
+          , text <| statusIcon line ])
       )
 
 
