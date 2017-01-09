@@ -14,6 +14,7 @@ module Update exposing (Msg(..), update)
 @docs updateBufferMap, updateNewChannelName, updateServerBuffer, isServerBuffer, isValidNewBuffer
 -}
 
+import Array as A
 import String exposing (isEmpty, startsWith)
 import Dict exposing (Dict)
 import Dict as D
@@ -86,7 +87,7 @@ update msg model =
             errorLog = Line "ERROR" "You cannot send a line to the server buffer."
 
             -- Add a error line to `lines` of current buffer, and set `newLine` of it to empty string.
-            newBuffer = { currentBuffer | newLine = "" , lines = currentBuffer.lines ++ [ errorLog ] }
+            newBuffer = { currentBuffer | newLine = "" , lines = A.push errorLog currentBuffer.lines }
           in
             ( { model | serverInfoMap = updateServerBuffer model.serverInfoMap model.currentServerName newBuffer }
             , Cmd.none )
@@ -106,7 +107,7 @@ update msg model =
             }
 
             -- Add a typed line to `lines` of current buffer, and set `newLine` of it to empty string.
-            newBuffer = { currentBuffer | newLine = "", lines = currentBuffer.lines ++ [newLine] }
+            newBuffer = { currentBuffer | newLine = "", lines = A.push newLine currentBuffer.lines }
             -- Updated model
             newModel : Model
             newModel = { model |
@@ -131,7 +132,7 @@ update msg model =
           -- Buffer to add the message
           targetBuffer = getBuffer model payload.namePair
           -- Updated buffer
-          newBuffer = { targetBuffer | lines = targetBuffer.lines ++ [payload.line] }
+          newBuffer = { targetBuffer | lines = A.push payload.line targetBuffer.lines }
           -- Updated model
           newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
 
@@ -164,7 +165,7 @@ update msg model =
           newChannelName = getNewChannelName model serverName
 
           -- Buffer map with the newly created buffer.
-          updatedBufferMap = updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer [] "")
+          updatedBufferMap = updateBufferMap model.bufferMap ( serverName, newChannelName ) (Buffer A.empty "")
 
           -- ServerInfo map with empty newChannelName for the server.
           updatedServerInfoMap = updateNewChannelName model.serverInfoMap serverName ""

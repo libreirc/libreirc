@@ -16,6 +16,8 @@ Top-level model consists of four fields: bufferMap, serverInfoMap, currentServer
 
 -}
 
+import Array exposing (Array)
+import Array as A
 import Dict exposing (Dict)
 import Dict as D
 
@@ -67,7 +69,7 @@ buffer : Buffer [ line ] "I'm typing this line"
 ```
 -}
 type alias Buffer =
-  { lines : List Line
+  { lines : Array Line
   , newLine : String
   }
 
@@ -152,9 +154,9 @@ model : Model
 model =
   Model
     (D.fromList
-      [ ( ( "InitServer", "#a" ), Buffer [] "" )
-      , ( ( "InitServer", "#b" ), Buffer [] "" )
-      , ( ( "InitServer", "#c" ), Buffer [] "" )
+      [ ( ( "InitServer", "#a" ), Buffer A.empty "" )
+      , ( ( "InitServer", "#b" ), Buffer A.empty "" )
+      , ( ( "InitServer", "#c" ), Buffer A.empty "" )
       ]
     )
     (D.fromList
@@ -172,7 +174,7 @@ model =
 -}
 errorBuffer : Buffer
 errorBuffer =
-  Buffer [ Line "NOTICE" "Currently not in a (valid) buffer." ] ""
+  Buffer (A.fromList [ Line "NOTICE" "Currently not in a (valid) buffer." ]) ""
 
 
 {- Dummy initial server buffer. This should be replaced as server-dependent buffer containing welcome message and etc.
@@ -183,7 +185,7 @@ initialServerBuffer serverName =
     welcomeMsg =
       "WELCOME TO " ++ serverName ++ " SERVER."
   in
-    Buffer [ Line "WELCOME" welcomeMsg ] ""
+    Buffer (A.fromList [ Line "WELCOME" welcomeMsg ]) ""
 
 
 {-| A constant used as `currentChannelName` when user is seeing server buffer.
