@@ -7,6 +7,9 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.6.0",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-preset-latest": "^6.16.0",
     "css-loader": "^0.26.1",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.1.1",
