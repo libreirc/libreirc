@@ -15,6 +15,7 @@ module Update exposing (Msg(..), update)
 -}
 
 import Array as A
+import Debug exposing (crash)
 import String exposing (isEmpty, startsWith)
 import Dict exposing (Dict)
 import Dict as D
@@ -114,7 +115,8 @@ update msg model =
             newModel = { model |
               bufferMap = updateBufferMap model.bufferMap currentNamePair newBuffer,
               session = let session = model.session
-                        in { session | counter = session.counter + 1 }
+                        in { session | counter = session.counter + 1 },
+              transmittingLineIndex = D.insert model.session.counter (A.length currentBuffer.lines) model.transmittingLineIndex
             }
 
             -- Publish the message to the MQTT broker
@@ -131,22 +133,30 @@ update msg model =
           -- The buffer that is target of the received payload
           targetBuffer = getBuffer model payload.namePair
         in
-        if payload.session.id == model.session.id
-        then -- Message sent by the client
+        if payload.session.id == model.session.id -- Is the message sent by the very own client?
+        then -- Yes, the message is sent by the client
           let
-            -- Buffer to change the state
-            updateIfCounterMatch msgCounter line =
-              case line.status of
-                Completed            -> line
-                Transmitting counter ->
-                  if counter == msgCounter
-                  then { line | status = Completed }
-                  else line
-            newBuffer = { targetBuffer | lines = A.map (updateIfCounterMatch payload.session.counter) targetBuffer.lines }
-            newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
+            -- As elm's core Dict library does not support something like python
+            -- dict's `pop` method, it is unavoidable to acheive similar
+            -- functinaliy with these two separate steps.
+            idx = case D.get payload.session.counter model.transmittingLineIndex of
+              Nothing -> crash "invalide session counter" -- FIXME: Better error handling
+              Just i  -> i
+            newTransmittingLineIndex = D.remove idx model.transmittingLineIndex
+            -- This is the line we should update the status of.
+            targetLine = case A.get idx targetBuffer.lines of
+              Nothing   -> crash "invalid line index" -- FIXME: Better error handling
+              Just line -> line
+            -- So we update the buffer's lines
+            newLines = A.set idx { targetLine | status = Completed } targetBuffer.lines
+            newBuffer = { targetBuffer | lines = newLines }
+            newModel =
+              { model
+              | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer
+              , transmittingLineIndex = newTransmittingLineIndex }
           in
             (newModel, Cmd.none)
-        else -- Message sent by another use
+        else -- No, the message is sent by another use
           let
             -- Updated buffer
             newBuffer = { targetBuffer | lines = A.push payload.line targetBuffer.lines }

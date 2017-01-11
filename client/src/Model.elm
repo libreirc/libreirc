@@ -136,6 +136,13 @@ type alias Session =
   }
 
 
+{-| TransmittingLineIndex is a dictionary mapping `Counter` to corresponding
+index of a line in `Buffer.lines`. This is used for efficient status change of
+line. -}
+type alias TransmittingLineIndex =
+  Dict Int Int
+
+
 {-| Current model structure. The pair of `currentServerName` and `currentChannelName` acts as a key identifying
 currently selected buffer. If a user is seeing server buffer, `currentChannelName` is set to `serverBufferKey`.
 -}
@@ -145,7 +152,8 @@ type alias Model =
     serverInfoMap: ServerInfoMap,
     currentServerName: ServerName,
     currentChannelName: ChannelName,
-    session: Session
+    session: Session,
+    transmittingLineIndex: TransmittingLineIndex
   }
 
 
@@ -169,6 +177,7 @@ model =
       id = 123456789, -- TODO: Randomize
       counter = 0
     }
+    D.empty
 
 
 {-| Buffer represnting that an error has occurred.
