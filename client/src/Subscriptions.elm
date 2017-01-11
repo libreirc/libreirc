@@ -7,8 +7,8 @@ module Subscriptions exposing (..)
 -}
 
 import Model exposing (Model)
-import Update exposing (Msg(ReceiveLine))
+import Update exposing (Msg(ReceivePayload))
 import Port exposing (subscribeMsg)
 
 subscriptions : Model -> Sub Msg
-subscriptions _ = subscribeMsg ReceiveLine
+subscriptions _ = subscribeMsg ReceivePayload

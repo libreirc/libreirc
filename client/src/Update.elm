@@ -55,7 +55,7 @@ case Msg of
 -}
 type Msg
   = SendLine
-  | ReceiveLine Port.Payload
+  | ReceivePayload Port.Payload
   | TypeNewLine String
   | TypeNewChannelName ServerName ChannelName
   | CreateBuffer ServerName
@@ -126,7 +126,7 @@ update msg model =
           in
             (newModel, cmd)
 
-      ReceiveLine payload ->
+      ReceivePayload payload ->
         let
           -- TODO: 자기가 보낸 메세지 무시하는거 필요함
 
