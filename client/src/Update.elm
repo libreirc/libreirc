@@ -128,19 +128,35 @@ update msg model =
 
       ReceivePayload payload ->
         let
-          -- TODO: 자기가 보낸 메세지 무시하는거 필요함
-
-          -- Buffer to add the message
+          -- The buffer that is target of the received payload
           targetBuffer = getBuffer model payload.namePair
-          -- Updated buffer
-          newBuffer = { targetBuffer | lines = A.push payload.line targetBuffer.lines }
-          -- Updated model
-          newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
-
-          -- Scroll to the bottom
-          cmd = cmdScrollToBottom
         in
-          (newModel, cmd)
+        if payload.session.id == model.session.id
+        then -- Message sent by the client
+          let
+            -- Buffer to change the state
+            updateIfCounterMatch msgCounter line =
+              case line.status of
+                Completed            -> line
+                Transmitting counter ->
+                  if counter == msgCounter
+                  then { line | status = Completed }
+                  else line
+            newBuffer = { targetBuffer | lines = A.map (updateIfCounterMatch payload.session.counter) targetBuffer.lines }
+            newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
+          in
+            (newModel, Cmd.none)
+        else -- Message sent by another use
+          let
+            -- Updated buffer
+            newBuffer = { targetBuffer | lines = A.push payload.line targetBuffer.lines }
+            -- Updated model
+            newModel = { model | bufferMap = updateBufferMap model.bufferMap payload.namePair newBuffer }
+
+            -- Scroll to the bottom
+            cmd = cmdScrollToBottom
+          in
+            (newModel, cmd)
 
       TypeNewLine typedNewLine ->
         let
