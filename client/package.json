@@ -20,7 +20,8 @@
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^2.4.0",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "webpack-fail-plugin": "^1.0.5"
   },
   "dependencies": {
     "normalize.css": "^5.0.0"
