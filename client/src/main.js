@@ -1,7 +1,7 @@
 // Non-js dependencies
-require('normalize.css/normalize.css');
-require('./main.styl');
+import 'normalize.css/normalize.css';
+import './main.styl';
 
-var Elm = require('./App.elm');
+import Elm from './App.elm';
 
 Elm.App.fullscreen();
