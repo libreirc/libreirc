@@ -164,9 +164,9 @@ logsList model =
     ul [ id "logs" ]
       (A.toList (currentBuffer.lines
         |> A.map (\line -> li []
-          [ text ("<@" ++ line.nick ++ "> " ++ line.text)]))
---        , text <| statusIcon line ])
-      )
+          [ text ("<@" ++ line.nick ++ "> " ++ line.text)
+          , text <| statusIcon line ])
+      ))
 
 
 {-| Form for typing new line for the current buffer.
