@@ -9,7 +9,7 @@ var msgpack = require('msgpack-lite');
 var app = Elm.App.fullscreen();
 
 // TODO: 내 MQTT 서버로 돌리기, TLS websocket 쓰기
-var client = mqtt.connect('ws://test.mosquitto.org:8080/mqtt');
+var client = mqtt.connect('ws://127.0.0.1:1883');
 
 // TODO: 채널에 맞춰서 subscribe 하게 만들기
 client.subscribe('SW5pdFNlcnZlcg==,I2E=', function(err, granted) {
