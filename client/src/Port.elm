@@ -19,6 +19,7 @@ port module Port exposing
 
 -}
 
+import Tuple exposing (first, second)
 import Model exposing (NamePair, Line, Session)
 
 -- Low-level functions
@@ -36,7 +37,7 @@ type alias MqttPayload =
       text: String,
       status: Maybe Float
     },
-    session: Session
+    session: (Int, Int)
   }
 
 {-| Port for publishing MQTT messages. -}
@@ -67,7 +68,7 @@ publishMsg payload =
         Model.Transmitting tempId -> Just (toFloat tempId)
         Model.Completed -> Nothing
     },
-    session = payload.session
+    session = (payload.session.id, payload.session.counter)
   }
 
 {-| Port for subscribing MQTT messages. -}
@@ -84,6 +85,9 @@ subscribeMsg tagger =
           Just tempId -> Model.Transmitting (round tempId)
           Nothing -> Model.Completed
       },
-      session = mqtt.session
+      session = {
+        id = first mqtt.session,
+        counter = second mqtt.session
+      }
     }
   in newMessage (convert >> tagger)
