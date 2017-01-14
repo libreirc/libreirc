@@ -25,10 +25,6 @@ before_install:
   # Prepare working directory
   - cd "$TRAVIS_BUILD_DIR/client"
 
-# Install dependencies
-install:
-  - yarn ii
-
 # Build
 script:
   - sysconfcpus -n 2 yarn build
