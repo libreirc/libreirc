@@ -6,7 +6,7 @@ Web client
 
 ### Intructions
 ```bash
-yarn ii       # Install dependencies (yarn install + elm-package install)
+yarn          # Install all dependencies
 yarn build    # Build everything in production mode
 
 yarn watch    # Run webpack in watch mode

@@ -1,7 +1,7 @@
 {
   "license": "AGPL-3.0",
   "scripts": {
-    "ii": "yarn && elm-package install --yes",
+    "install": "elm-package install -y",
     "build": "NODE_ENV=production webpack --optimize-occurrence-order",
     "watch": "webpack --watch"
   },
