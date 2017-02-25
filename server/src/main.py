@@ -6,7 +6,7 @@ app = Sanic(__name__)
 # Static file serving
 #
 # TODO: static file serving need to be used only in debug mode.
-# See https://github.com/openirc/openirc/issues/8 for the further details.
+# See https://github.com/libreirc/libreirc/issues/8 for the further details.
 app.static('/', './public/index.html')
 app.static('*', './public')
 

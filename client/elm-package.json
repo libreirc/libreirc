@@ -1,7 +1,7 @@
 {
     "version": "0.0.0",
     "summary": "IRC Client for everyone!",
-    "repository": "https://github.com/openirc/openirc.git",
+    "repository": "https://github.com/libreirc/libreirc.git",
     "license": "AGPL-3.0",
     "source-directories": [
         "./src/"

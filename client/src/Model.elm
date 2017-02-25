@@ -1,5 +1,5 @@
 module Model exposing (..)
-{-| This module includes all model-related part of OpenIRC.
+{-| This module includes all model-related part of LibreIRC.
 Top-level model consists of four fields: bufferMap, serverInfoMap, currentServerName, currentChannelName.
 
 # Definitions

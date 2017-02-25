@@ -1,5 +1,5 @@
 module Update exposing (Msg(..), update)
-{-| This module includes all update-related part of OpenIRC.
+{-| This module includes all update-related part of LibreIRC.
 
 # Definitions
 
@@ -23,7 +23,7 @@ import Dom.Scroll exposing (toBottom)
 import Model exposing (..)
 
 
-{-| Collection of all msg used inside OpenIRC.
+{-| Collection of all msg used inside LibreIRC.
 
 ```elm
 case Msg of

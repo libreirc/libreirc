@@ -1,10 +1,10 @@
-Why OpenIRC?
+Why LibreIRC?
 ========
 
 ## A. 개요
 IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하는 데에는 상당한 진입장벽이 있습니다. 일반적인 IRC 클라이언트를 사용하면 창이 꺼져 있는 동안 접속이 끊기고, 그렇다고 리눅스 서버에 tmux/screen과 weechat/irssi를 써서 24시간 켜져 있는 IRC 클라이언트를 세팅하자니 관련 지식이 없는 사람들에겐 너무 힘들기 때문입니다. 
 
-이는 많은 IRC 유저가 공감할 만한 문제이고, OpenIRC 프로젝트는 이 문제를 해결하기 위해 시작되었습니다.
+이는 많은 IRC 유저가 공감할 만한 문제이고, LibreIRC 프로젝트는 이 문제를 해결하기 위해 시작되었습니다.
 
 ## B. 문제 정의
 ![weechat]
@@ -35,9 +35,9 @@ IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하
 
 메세지브로커나 DB와 같이 기존에 이미 있는 솔루션을 활용할 수 있는 부분은 최대한 활용할 계획입니다. 현재 생각 중인 대략적인 구조는 아래와 같습니다.
 
-<p align=center><img src="https://openirc.github.io/img/openirc-bigpicture.png"></p>
+<p align=center><img src="https://libreirc.github.io/img/libreirc-bigpicture.png"></p>
 
-클라이언트는 MQTT 프로토콜 (+ websocket) 를 이용해 mosquitto MQTT 브로커와 통신합니다. mosquitto 는 MQTT 프로토콜로 OpenIRC의 백엔드에 해당하는 MQTT-IRC 게이트웨이와 통신합니다. 좀 더 세부적인 설명은 OpenIRC [프로젝트 구조][project-arch] 문서를 참고해주세요.
+클라이언트는 MQTT 프로토콜 (+ websocket) 를 이용해 mosquitto MQTT 브로커와 통신합니다. mosquitto 는 MQTT 프로토콜로 LibreIRC의 백엔드에 해당하는 MQTT-IRC 게이트웨이와 통신합니다. 좀 더 세부적인 설명은 LibreIRC [프로젝트 구조][project-arch] 문서를 참고해주세요.
 
 ## D. 현재상태
 **프론트엔드** - 아직 디자인적인 고려는 되어 있지 않지만, 쓸 수 있는 웹 프론트엔드가 만들어져 있습니다. Elm으로 개발하였는데, 기대했던 대로 개발 속도가 상당히 빨라 웹 UI는 병목이 되지 않을 것 같습니다.
@@ -54,12 +54,12 @@ IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하
 
 ## Appendix I. 사전조사
 
-이 부록에서는 OpenIRC 프로젝트를 시작하기 전, 바퀴의 재발명을 피하기 위해 사전에 조사해 본 각종 IRC 클라이언트들과 및 각 클라이언트를 리젝트 할 수 밖에 없었던 이유를 설명합니다.
+이 부록에서는 LibreIRC 프로젝트를 시작하기 전, 바퀴의 재발명을 피하기 위해 사전에 조사해 본 각종 IRC 클라이언트들과 및 각 클라이언트를 리젝트 할 수 밖에 없었던 이유를 설명합니다.
 
 ### 1. Glowing Bear, Weechat Android
 
-<img height=240 src="https://openirc.github.io/img/glowing-bear.png">
-<img height=240 src="https://openirc.github.io/img/weechat-android.png">
+<img height=240 src="https://libreirc.github.io/img/glowing-bear.png">
+<img height=240 src="https://libreirc.github.io/img/weechat-android.png">
 
 개인적으로 쓰기에 굉장히 좋았지만 치명적인 단점이 있습니다.
 
@@ -70,8 +70,8 @@ IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하
 
 ### 2. Mibbit, Kiwi IRC, mIRC, HexChat, ...
 
-<img height=240 src="https://openirc.github.io/img/mibbit.png">
-<img height=240 src="https://openirc.github.io/img/kiwi.png">
+<img height=240 src="https://libreirc.github.io/img/mibbit.png">
+<img height=240 src="https://libreirc.github.io/img/kiwi.png">
 
 세팅 없이 당장 접속하기에는 가장 좋았던 그룹입니다. 그러나
 
@@ -96,7 +96,7 @@ IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하
 
 ![irctalk]
 
-한국 개발자들이 예전에 개발했던, OpenIRC와 굉장히 유사한 프로젝트입니다. 아마 개발의 동기 역시 같았을 것이라 봅니다. 그러나
+한국 개발자들이 예전에 개발했던, LibreIRC와 굉장히 유사한 프로젝트입니다. 아마 개발의 동기 역시 같았을 것이라 봅니다. 그러나
 
 1. 공식 출시하기 전에 베타상태로 개발이 멈춰서, 개인적으로 요청하는게 아니면 앱을 받을수 없음
 2. 옵을 주지 못하는 식으로 몇몇 기능이 없음
@@ -115,10 +115,10 @@ IRC는 정말 재미난 대화수단이지만, 처음 보는 사람이 사용하
 
 유료라는 치명적인 단점이 있지만, "이거랑 똑같이 만들면 되겠다" 라는 단기적인 기준점으로 삼을 수 있었습니다.
 
-[weechat]: https://openirc.github.io/img/weechat.png
-[lounge]: https://openirc.github.io/img/lounge.png
-[irctalk]: https://openirc.github.io/img/irctalk.png
-[irccloud]: https://openirc.github.io/img/irccloud.png
+[weechat]: https://libreirc.github.io/img/weechat.png
+[lounge]: https://libreirc.github.io/img/lounge.png
+[irctalk]: https://libreirc.github.io/img/irctalk.png
+[irccloud]: https://libreirc.github.io/img/irccloud.png
 [project-arch]: project-structure.md
 [elm-mqtt]: https://github.com/simnalamburt/elm-mqtt
 [appendix-1]: #appendix-i-사전조사

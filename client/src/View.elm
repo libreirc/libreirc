@@ -1,5 +1,5 @@
 module View exposing (view)
-{-| This module includes all view of OpenIRC.
+{-| This module includes all view of LibreIRC.
 
 # Top-level View
 
@@ -23,12 +23,12 @@ import Tuple exposing (second)
 import Model exposing (..)
 import Update exposing (Msg(..))
 
-{-| Top-level view of OpenIRC. It consists of two components - `bufferListsDiv` showing information about all open
+{-| Top-level view of LibreIRC. It consists of two components - `bufferListsDiv` showing information about all open
 buffer(sidebar), and `currentBufferDiv` showing information about the current buffer.
 -}
 view : Model -> Html Msg
 view model =
-  div [ id "openirc" ]
+  div [ id "libreirc" ]
     [ bufferListsDiv model
     , currentBufferDiv model
     ]

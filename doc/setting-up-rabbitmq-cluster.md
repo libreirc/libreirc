@@ -1,5 +1,5 @@
-_**NOTE!** 아직 RabbitMQ를 OpenIRC용 메세지 브로커로 써서는 안됩니다! 현재의
-RabbitMQ는 OpenIRC 서비스에 필수적인 보안기능들이 아직 구현되어있지 않습니다._
+_**NOTE!** 아직 RabbitMQ를 LibreIRC용 메세지 브로커로 써서는 안됩니다! 현재의
+RabbitMQ는 LibreIRC 서비스에 필수적인 보안기능들이 아직 구현되어있지 않습니다._
 
 ###### References
 - https://github.com/rabbitmq/rabbitmq-server/issues/505
@@ -12,7 +12,7 @@ RabbitMQ는 OpenIRC 서비스에 필수적인 보안기능들이 아직 구현�
 
 Setting up your own RabbitMQ cluster
 ========
-작은 OpenIRC 서버에서는 [mosquitto]나 [mosca]와 같은 메세지브로커를 사용하는것이
+작은 LibreIRC 서버에서는 [mosquitto]나 [mosca]와 같은 메세지브로커를 사용하는것이
 편리하지만, 유저 수가 많아질경우 이 솔루션들은 수평확장이 힘들다. 이때
 RabbitMQ의 클러스터 기능을 쓰면, [SPOF]없이 아주 편리하게 고가용성을 유지한채로
 수평확장을 할 수 있다.
@@ -32,7 +32,7 @@ RabbitMQ의 클러스터 기능을 쓰면, [SPOF]없이 아주 편리하게 고�
 
 I. 설치
 --------
-RabbitMQ 3.6.1 이상을 써야한다. OpenIRC 프로젝트는 웹소켓을 지원하는 MQTT
+RabbitMQ 3.6.1 이상을 써야한다. LibreIRC 프로젝트는 웹소켓을 지원하는 MQTT
 브로커를 필요로하는데, [rabbitmq-web-mqtt] 플러그인이 RabbitMQ 3.6.1 이상 버전을
 필요로 하기때문이다.
 
@@ -401,7 +401,7 @@ sudo rabbitmqctl set_policy -p <VHOST> mqtt-ha-policy "^mqtt-subscription-" \
 
 위처럼 CLI로 정책을 추가해줘도 되고, 아래와 같이 관리자콘솔에서도 해줄 수 있다.
 
-![Management Console Screenshot](https://openirc.github.io/img/ha-policy.png)
+![Management Console Screenshot](https://libreirc.github.io/img/ha-policy.png)
 
 ###### References
 - https://www.rabbitmq.com/ha.html

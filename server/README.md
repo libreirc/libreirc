@@ -1,4 +1,4 @@
-OpenIRC server
+LibreIRC server
 ========
 
 ### Prerequisite

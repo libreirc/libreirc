@@ -38,10 +38,10 @@ type system of the language makes it suitable for the fast development by a smal
 
 [webpack] does require fairly complex configuration, but still it's the best one among the front-end code build
 solutions for now. It supports bundling, compression, and [loader] and [plugin] system. Also, upcoming [webpack 2]
-provides even more powerful features such as tree-shaking. OpenIRC will probably stick with webpack unless very
+provides even more powerful features such as tree-shaking. LibreIRC will probably stick with webpack unless very
 compelling alternative shows up.
 
-[stylus] is chosen because it is the most familiar CSS preprocessor for OpenIRC developers. Nevertheless, if someone
+[stylus] is chosen because it is the most familiar CSS preprocessor for LibreIRC developers. Nevertheless, if someone
 wants to contribute in desing-wise and favor othe CSS preprocessor over stylus, we are more than willing to change it.
 For now, there aren't much stylus code as our current goal is to make a working MVP.
 
@@ -53,7 +53,7 @@ For now, there aren't much stylus code as our current goal is to make a working 
 [stylus]: http://stylus-lang.com/
 [blazing-fast-1]: http://elm-lang.org/blog/blazing-fast-html
 [blazing-fast-2]: http://elm-lang.org/blog/blazing-fast-html-round-two
-["production" icon from Civilization V]: https://openirc.github.io/img/production.png
+["production" icon from Civilization V]: https://libreirc.github.io/img/production.png
 [npm]: https://github.com/npm/npm
 [lock file]: https://yarnpkg.com/en/docs/yarn-lock
 [webpack 2]: https://webpack.js.org/
@@ -86,7 +86,7 @@ Most of our scripts regarding server-development are written in [perl]. The reas
 compared to shell script, and it's also available from almost all environment. Unless the script logic gets too complex,
 we will stick to the choice.
 
-[`venv`] embedded in [python] is used instead of [Virtualenv] because OpenIRC forces developers to use Python 3.5+
+[`venv`] embedded in [python] is used instead of [Virtualenv] because LibreIRC forces developers to use Python 3.5+
 anyway. In that case, using [Virtualenv] only introduces unnecessary, additional setup for developers.
 
 [python]: https://www.python.org/
