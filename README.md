@@ -1,3 +1,7 @@
+*NOTE: This project is in WIP*
+
+<br>
+
 LibreIRC
 ========
 > :heartbeat: IRC Client for everyone!
